@@ -1,0 +1,30 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: TokenStaking
+    network: mainnet
+    source:
+      address: "0x01B67b1194C75264d06F808A921228a95C765dd7"
+      abi: TokenStaking
+      startBlock: 14113768
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Staked
+        - ToppedUp
+        - Unstaked
+      abis:
+        - name: TokenStaking
+          file: ./abis/TokenStaking.json
+      eventHandlers:
+        - event: Staked(indexed uint8,indexed address,indexed address,address,address,uint96)
+          handler: handleStaked
+        - event: ToppedUp(indexed address,uint96)
+          handler: handleToppedUp
+        - event: Unstaked(indexed address,uint96)
+          handler: handleUnstaked
+      file: ./src/mapping.ts

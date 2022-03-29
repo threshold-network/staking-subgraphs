@@ -1,0 +1,71 @@
+:toc: macro
+
+= Threshold network subgraphs
+
+This repository contains Threshold network subgraphs.
+
+The subgraphs are open APIs to query data from networks like Ethereum and IPFS. The data is indexed by https://thegraph.com[*The Graph*] decentralized protocol.
+
+toc::[]
+
+== Install, build and deploy subgraph
+
+=== Prerequisites
+
+Please make sure you have the following prerequisites installed on your machine:
+
+- https://nodejs.org[Node.js] >14.17.4
+- https://yarnpkg.com[Yarn] >1.22.10
+
+=== Installation
+
+The Graph CLI can be installed in your computer with npm or yarn:
+```
+# NPM
+npm install -g @graphprotocol/graph-cli
+
+# Yarn
+yarn global add @graphprotocol/graph-cli
+```
+
+Once graph-cli is installed in your system, install this subgraph node package:
+```
+yarn install
+```
+
+=== Build the subgraph
+```
+graph codegen && graph build
+```
+
+=== Deploy subgraph
+
+Compiled subgraphs can be deployed in Subgraph Studio. For this it is necessary to create a new subgraph in https://thegraph.com/studio/[*Subgraph Studio*] and get a `deploy key`.
+
+Once the new subgraph is created in Subgraph Studio, you have to authenticate in graph-cli:
+```
+graph auth  --studio <DEPLOY KEY>
+```
+
+And then you can deploy the subgraph. Follow the CLI instructions:
+```
+graph deploy --studio
+```
+
+== GraphiQL query example
+```
+{
+  metrics(id: "TokenStakingMetrics") {
+    totalStaked
+    totalStakers
+  }
+  stakes {
+    stakeType
+    owner
+    stakingProvider
+    beneficiary
+    authorizer
+    amount
+  }
+}
+```
