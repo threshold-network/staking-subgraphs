@@ -1,13 +1,13 @@
-enum StakeType {
-  NU,
-  KEEP,
-  T
-}
-
 type Metric @entity {
   id: ID!
   totalStaked: BigInt!
   totalStakers: Int!
+}
+
+enum StakeType {
+  NU,
+  KEEP,
+  T
 }
 
 type Stake @entity {
@@ -18,4 +18,25 @@ type Stake @entity {
   beneficiary: Bytes! # address
   authorizer: Bytes! # address
   amount: BigInt!
+}
+
+type EpochCounter @entity {
+  id: ID!
+  count: Int!
+}
+
+type EpochStake @entity {
+  id: ID!
+  stakingProvider: Bytes! # address
+  owner: Bytes! # address
+  amount: BigInt!
+  participation: BigDecimal
+}
+
+type Epoch @entity {
+  id: ID!
+  startTime: BigInt!
+  duration: BigInt
+  totalStaked: BigInt!
+  stakes: [EpochStake!]!
 }
