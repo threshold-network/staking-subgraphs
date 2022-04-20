@@ -27,4 +27,6 @@ dataSources:
           handler: handleToppedUp
         - event: Unstaked(indexed address,uint96)
           handler: handleUnstaked
+        - event: MinimumStakeAmountSet(uint96)
+          handler: handleMinStakeAmountChanged
       file: ./src/mapping.ts

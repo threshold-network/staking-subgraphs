@@ -1,6 +1,6 @@
 import { store, crypto, ByteArray, log } from "@graphprotocol/graph-ts"
-import { Staked, ToppedUp, Unstaked } from "../generated/TokenStaking/TokenStaking"
-import { Metric, Stake, EpochCounter, Epoch, EpochStake } from "../generated/schema"
+import { Staked, ToppedUp, Unstaked, MinimumStakeAmountSet } from "../generated/TokenStaking/TokenStaking"
+import { Metric, Stake, EpochCounter, Epoch, EpochStake, MinStakeAmount } from "../generated/schema"
 
 
 export function handleStaked(event: Staked): void {
@@ -183,4 +183,20 @@ export function handleUnstaked(event: Unstaked): void {
     event.params.stakingProvider.toHexString(),
     event.params.amount.toString()
   ])
+}
+
+export function handleMinStakeAmountChanged(
+  event: MinimumStakeAmountSet
+): void {
+  const id = `min-stake-${event.transaction.hash.toHexString()}`
+
+  let minStake = MinStakeAmount.load(id)
+  if (!minStake) {
+    minStake = new MinStakeAmount(id)
+  }
+
+  minStake.amount = event.params.amount
+  minStake.blockNumber = event.block.number
+  minStake.updatedAt = event.block.timestamp
+  minStake.save()
 }
