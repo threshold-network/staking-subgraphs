@@ -11,32 +11,6 @@ export function handleStaked(event: Staked): void {
     epochCounter = new EpochCounter("Singleton")
     epochCounter.count = 0
   }
-  const lastEpochId = (epochCounter.count - 1).toString()
-  let lastEpoch = Epoch.load(lastEpochId)
-
-  let epochStakes:string[] = []
-
-  if (lastEpoch) {
-    lastEpoch.duration = blockTimestamp.minus(lastEpoch.startTime)
-    lastEpoch.save()
-    epochStakes = lastEpoch.stakes
-    for(let i = 0; i < epochStakes.length; i++) {
-      // Calculate the participation of each stake in last epoch
-      let epochStake = EpochStake.load(epochStakes[i])
-      epochStake!.participation = epochStake!.amount.divDecimal(lastEpoch.totalStaked.toBigDecimal())
-      epochStake!.save()
-
-      // Duplicates each epoch stake to add them to new epoch
-      const epStId = crypto.keccak256(ByteArray.fromUTF8(
-        epochStake!.stakeData
-        + epochCounter.count.toString()
-      )).toHexString()
-      epochStake!.id = epStId
-      epochStake!.participation = null
-      epochStake!.save()
-      epochStakes[i] = epochStake!.id
-    }
-  }
 
   let stakeData = new StakeData(event.params.stakingProvider.toHexString())
   let type:string
@@ -57,6 +31,30 @@ export function handleStaked(event: Staked): void {
   stakeData.authorizer = event.params.authorizer
   stakeData.save()
 
+  const lastEpochId = (epochCounter.count - 1).toString()
+  let lastEpoch = Epoch.load(lastEpochId)
+
+  const totalStaked = lastEpoch ? lastEpoch.totalStaked.plus(event.params.amount) : event.params.amount
+  let epochStakes:string[] = []
+
+  if (lastEpoch) {
+    lastEpoch.duration = blockTimestamp.minus(lastEpoch.startTime)
+    lastEpoch.save()
+
+    epochStakes = lastEpoch.stakes
+    for(let i = 0; i < epochStakes.length; i++) {
+      let epochStake = EpochStake.load(epochStakes[i])
+      const epStId = crypto.keccak256(ByteArray.fromUTF8(
+        epochStake!.stakeData
+        + epochCounter.count.toString()
+        )).toHexString()
+      epochStake!.id = epStId
+      epochStake!.participation = epochStake!.amount.divDecimal(totalStaked.toBigDecimal())
+      epochStake!.save()
+      epochStakes[i] = epochStake!.id
+    }
+  }
+
   const epStId = crypto.keccak256(ByteArray.fromUTF8(
     stakeData.id
     + epochCounter.count.toString()
@@ -64,13 +62,14 @@ export function handleStaked(event: Staked): void {
   let newEpochStake = new EpochStake(epStId)
   newEpochStake.stakeData = stakeData.id
   newEpochStake.amount = event.params.amount
+  newEpochStake.participation = newEpochStake.amount.divDecimal(totalStaked.toBigDecimal())
   newEpochStake.save()
 
   epochStakes.push(newEpochStake.id)
 
   let epoch = new Epoch(epochCounter.count.toString())
   epoch.startTime = blockTimestamp
-  epoch.totalStaked = lastEpoch ? lastEpoch.totalStaked.plus(event.params.amount) : event.params.amount
+  epoch.totalStaked = totalStaked
   epoch.stakes = epochStakes
   epoch.save()
 
@@ -86,26 +85,21 @@ export function handleToppedUp(event: ToppedUp): void {
   const lastEpochId = (epochCounter!.count - 1).toString()
   let lastEpoch = Epoch.load(lastEpochId)
 
+  const totalStaked = lastEpoch!.totalStaked.plus(event.params.amount)
   let stakeInPreviousEpoch = false
   let epochStakes:string[] = []
 
   lastEpoch!.duration = blockTimestamp.minus(lastEpoch!.startTime)
   lastEpoch!.save()
+
   epochStakes = lastEpoch!.stakes
   for(let i = 0; i < epochStakes.length; i++) {
-    // Calculate the participation of each stake in last epoch
     let epochStake = EpochStake.load(epochStakes[i])
-    epochStake!.participation = epochStake!.amount.divDecimal(lastEpoch!.totalStaked.toBigDecimal())
-    epochStake!.save()
-
-    // Duplicates each epoch stake to add them to new epoch
     const epStId = crypto.keccak256(ByteArray.fromUTF8(
       epochStake!.stakeData
       + epochCounter!.count.toString()
     )).toHexString()
     epochStake!.id = epStId
-    epochStake!.participation = null
-
 
     // If this stake is the one to be topped up, increase the amount
     if (epochStake!.stakeData == event.params.stakingProvider.toHexString()) {
@@ -113,11 +107,12 @@ export function handleToppedUp(event: ToppedUp): void {
       epochStake!.amount = epochStake!.amount.plus(event.params.amount)
     }
 
+    epochStake!.participation = epochStake!.amount.divDecimal(totalStaked.toBigDecimal())
     epochStake!.save()
     epochStakes[i] = epochStake!.id
   }
 
-  // If the topped up stake is not in the previous epoch, add it
+  // If the topped-up-stake is not in the previous epoch, add it
   if (!stakeInPreviousEpoch) {
     const epStId = crypto.keccak256(ByteArray.fromUTF8(
       event.params.stakingProvider.toHexString()
@@ -126,13 +121,14 @@ export function handleToppedUp(event: ToppedUp): void {
     let newEpochStake = new EpochStake(epStId)
     newEpochStake.stakeData = event.params.stakingProvider.toHexString()
     newEpochStake.amount = event.params.amount
+    newEpochStake.participation = newEpochStake.amount.divDecimal(totalStaked.toBigDecimal())
     newEpochStake.save()
     epochStakes.push(newEpochStake.id)
   }
 
   let epoch = new Epoch(epochCounter!.count.toString())
   epoch.startTime = blockTimestamp
-  epoch.totalStaked = lastEpoch!.totalStaked.plus(event.params.amount)
+  epoch.totalStaked = totalStaked
   epoch.stakes = epochStakes
   epoch.save()
 
@@ -148,26 +144,21 @@ export function handleUnstaked(event: Unstaked): void {
   const lastEpochId = (epochCounter!.count - 1).toString()
   let lastEpoch = Epoch.load(lastEpochId)
 
+  const totalStaked = lastEpoch!.totalStaked.minus(event.params.amount)
   let emptyStakeArrayIndex:i32 = -1
   let epochStakes:string[] = []
 
   lastEpoch!.duration = blockTimestamp.minus(lastEpoch!.startTime)
   lastEpoch!.save()
+
   epochStakes = lastEpoch!.stakes
-
   for(let i = 0; i < epochStakes.length; i++) {
-    // Calculate the participation of each stake in last epoch
     let epochStake = EpochStake.load(epochStakes[i])
-    epochStake!.participation = epochStake!.amount.divDecimal(lastEpoch!.totalStaked.toBigDecimal())
-    epochStake!.save()
-
-    // Duplicates each epoch stake to add them to new epoch
     const epStId = crypto.keccak256(ByteArray.fromUTF8(
       epochStake!.stakeData
       + epochCounter!.count.toString()
     )).toHexString()
     epochStake!.id = epStId
-    epochStake!.participation = null
 
     // If this stake is the one to be unstaked, decrease the amount
     if (epochStake!.stakeData == event.params.stakingProvider.toHexString()) {
@@ -175,6 +166,7 @@ export function handleUnstaked(event: Unstaked): void {
       emptyStakeArrayIndex = epochStake!.amount.isZero() ? i : -1
     }
 
+    epochStake!.participation = epochStake!.amount.divDecimal(totalStaked.toBigDecimal())
     epochStake!.save()
     epochStakes[i] = epochStake!.id
   }
@@ -185,7 +177,7 @@ export function handleUnstaked(event: Unstaked): void {
 
   let epoch = new Epoch(epochCounter!.count.toString())
   epoch.startTime = blockTimestamp
-  epoch.totalStaked = lastEpoch!.totalStaked.minus(event.params.amount)
+  epoch.totalStaked = totalStaked
   epoch.stakes = epochStakes
   epoch.save()
 
