@@ -52,20 +52,75 @@ And then you can deploy the subgraph. Follow the CLI instructions:
 graph deploy --studio
 ```
 
-== GraphiQL query example
+== GraphiQL query examples
+Current temporary query URL:
+
+https://api.studio.thegraph.com/query/24143/threshold/0.0.1
+
+=== Check current stakes
 ```
 {
-  metrics(id: "TokenStakingMetrics") {
+  epoches(orderBy: startTime, orderDirection: desc, first: 1) {
     totalStaked
-    totalStakers
+    stakes {
+      amount
+      participation
+      stakeData {
+        stakingProvider
+        owner
+        stakeType
+        authorizer
+        beneficiary
+      }
+    }
   }
-  stakes {
-    stakeType
-    owner
-    stakingProvider
-    beneficiary
-    authorizer
-    amount
+}
+```
+
+=== Get all stakes of every epoch from origin
+```
+{
+  epoches(orderBy: startTime, orderDirection: asc) {
+    totalStaked
+    stakes {
+      amount
+      participation
+      startTime
+      duration
+      stakeData {
+        stakingProvider
+        owner
+        stakeType
+        authorizer
+        beneficiary
+      }
+    }
+  }
+}
+```
+
+=== Get stakes between two dates
+```
+{
+  epoches(
+    orderBy: startTime
+    orderDirection: asc
+    where: {startTime_gte: "<START_TIMESTAMP", startTime_lte: "END_TIMESTAMP"}
+  ) {
+    totalStaked
+    stakes {
+      amount
+      participation
+      stakeData {
+        stakingProvider
+        owner
+        stakeType
+        authorizer
+        beneficiary
+      }
+    }
+    startTime
+    duration
   }
 }
 ```
