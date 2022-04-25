@@ -17,6 +17,7 @@ dataSources:
         - Staked
         - ToppedUp
         - Unstaked
+        - DelegateChanged
       abis:
         - name: TokenStaking
           file: ./abis/TokenStaking.json
@@ -27,4 +28,26 @@ dataSources:
           handler: handleToppedUp
         - event: Unstaked(indexed address,uint96)
           handler: handleUnstaked
+        - event: DelegateChanged(indexed address,indexed address,indexed address)
+          handler: handleDelegateChanged
+      file: ./src/mapping.ts
+  - kind: ethereum
+    name: SimplePREApplication
+    network: mainnet
+    source:
+      address: "0x7E01c9c03FD3737294dbD7630a34845B0F70E5Dd"
+      abi: SimplePREApplication
+      startBlock: 14141140
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Operator
+      abis:
+        - name: SimplePREApplication
+          file: ./abis/SimplePREApplication.json
+      eventHandlers:
+        - event: OperatorConfirmed(indexed address,indexed address)
+          handler: handleOperatorConfirmed
       file: ./src/mapping.ts

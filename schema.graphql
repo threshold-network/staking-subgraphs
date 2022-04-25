@@ -32,3 +32,15 @@ type EpochCounter @entity {
   id: ID!
   count: Int!
 }
+
+type Delegation @entity {
+  id: ID!
+  delegator: Bytes! # address
+  delegate: Bytes! # address
+}
+
+type ConfirmedOperator @entity {
+  id: ID!
+  stakingProvider: Bytes! # address
+  operator: Bytes! # address
+}

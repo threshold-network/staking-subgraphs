@@ -1,6 +1,21 @@
-import { crypto, ByteArray, log } from "@graphprotocol/graph-ts"
-import { Staked, ToppedUp, Unstaked } from "../generated/TokenStaking/TokenStaking"
-import { StakeData, EpochCounter, Epoch, EpochStake } from "../generated/schema"
+import { crypto, ByteArray } from "@graphprotocol/graph-ts"
+import {
+  OperatorConfirmed
+} from "../generated/SimplePREApplication/SimplePREApplication"
+import {
+  Staked,
+  ToppedUp,
+  Unstaked,
+  DelegateChanged
+} from "../generated/TokenStaking/TokenStaking"
+import {
+  StakeData,
+  EpochCounter,
+  Epoch,
+  EpochStake,
+  Delegation,
+  ConfirmedOperator
+} from "../generated/schema"
 
 
 export function handleStaked(event: Staked): void {
@@ -183,4 +198,26 @@ export function handleUnstaked(event: Unstaked): void {
 
   epochCounter!.count ++
   epochCounter!.save()
+}
+
+
+export function handleDelegateChanged(event: DelegateChanged): void {
+  let delegation = Delegation.load(event.params.delegator.toHexString())
+  if (!delegation) {
+    delegation = new Delegation(event.params.delegator.toHexString())
+  }
+  delegation.delegator = event.params.delegator
+  delegation.delegate = event.params.toDelegate
+  delegation.save()
+}
+
+
+export function handleOperatorConfirmed(event: OperatorConfirmed): void {
+  let operator = ConfirmedOperator.load(event.params.stakingProvider.toHexString())
+  if (!operator) {
+    operator = new ConfirmedOperator(event.params.stakingProvider.toHexString())
+  }
+  operator.stakingProvider = event.params.stakingProvider
+  operator.operator = event.params.operator
+  operator.save()
 }
