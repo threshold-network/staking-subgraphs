@@ -114,3 +114,47 @@ https://api.studio.thegraph.com/query/24143/threshold/0.0.2
   }
 }
 ```
+
+== Test the subgraph locally
+
+=== Run local chain eg. Ganache
+
+Note that host set to `0.0.0.0` is necessary for Ganache to be accessible from
+within Docker and from other machines. By default, Ganache only binds to
+127.0.0.1, which can only be accessed from the host machine that Ganache runs
+on. If you use a ganache-cli run the node with `ganache-cli -h 0.0.0.0`. If you
+use a Ganche in GUI version go to `settings -> server ` and set `HOSTNAME` to
+`0.0.0.0 - All Interfaces`.
+
+=== Deploy the Threshold Network contracts to local chain
+
+Clone https://github.com/threshold-network/solidity-contracts repo and make sure
+the development network config in
+https://github.com/threshold-network/solidity-contracts/blob/main/hardhat.config.ts#L42-L44[hardhat.config.ts]
+is correct for your local chain.
+
+Run `yarn deploy --network development --reset` to deploy contracts to your
+local chain.
+
+=== Update the subgraph manifest
+
+Set the correct `addrres` and `startBlock` for contracts in `subgraph.yaml`
+file.
+
+=== Run a local Graph Node
+
+`docker-compose up`
+
+=== Install dependencies
+
+`yarn`
+
+=== Deploy the subgraph to the local Graph Node
+
+Run code generation: `yarn codegen`.
+
+Allocate the subgraph name in the local Graph Node: `yarn create-local`.
+
+Note: use it only if your subgraph is not created in the local Graph node.
+
+Deploy the subgraph to your local Graph Node. `yarn deploy-local`.
