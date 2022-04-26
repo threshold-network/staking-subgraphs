@@ -52,20 +52,65 @@ And then you can deploy the subgraph. Follow the CLI instructions:
 graph deploy --studio
 ```
 
-== GraphiQL query example
+== GraphQL relevant fields
+
+- `Epoch`: each staking event (i.e stake, top up and unstake) creates a new epoch, so the duration of these is variable. It contains a list of the stakes at that time.
+
+- `StakeData`: information about each stake ever made.
+
+- `EpochStake`: information about the token amount staked in each epoch.
+
+- `Delegation`: delegator and delegate address of each delegation accomplished.
+
+- `ConfirmedOperator`: staking provider and operator address of each operator confirmation ever made.
+
+== GraphQL query examples
+Current temporary query URL:
+
+https://api.studio.thegraph.com/query/24143/threshold/0.0.2
+
+=== Check current stakes
 ```
 {
-  metrics(id: "TokenStakingMetrics") {
+  epoches(orderBy: startTime, orderDirection: desc, first: 1) {
     totalStaked
-    totalStakers
+    stakes {
+      amount
+      participation
+      stakeData {
+        stakingProvider
+        owner
+        stakeType
+        authorizer
+        beneficiary
+      }
+    }
   }
-  stakes {
-    stakeType
-    owner
-    stakingProvider
-    beneficiary
-    authorizer
-    amount
+}
+```
+
+=== Get stakes between two dates
+```
+{
+  epoches(
+    orderBy: startTime
+    orderDirection: asc
+    where: {startTime_gte: "<START_TIMESTAMP", startTime_lte: "END_TIMESTAMP"}
+  ) {
+    totalStaked
+    stakes {
+      amount
+      participation
+      stakeData {
+        stakingProvider
+        owner
+        stakeType
+        authorizer
+        beneficiary
+      }
+    }
+    startTime
+    duration
   }
 }
 ```

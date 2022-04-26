@@ -1,40 +1,27 @@
-type Metric @entity {
-  id: ID!
-  totalStaked: BigInt!
-  totalStakers: Int!
-}
-
 enum StakeType {
   NU,
   KEEP,
   T
 }
 
-type Stake @entity {
-  id: ID!
+type StakeData @entity {
+  id: ID! # staking provider address
   stakeType: StakeType!
   owner: Bytes! # address
   stakingProvider: Bytes! # address
   beneficiary: Bytes! # address
   authorizer: Bytes! # address
-  amount: BigInt!
-}
-
-type EpochCounter @entity {
-  id: ID!
-  count: Int!
 }
 
 type EpochStake @entity {
-  id: ID!
-  stakingProvider: Bytes! # address
-  owner: Bytes! # address
+  id: ID! # staking prov add + epoch counter
+  stakeData: StakeData!
   amount: BigInt!
   participation: BigDecimal
 }
 
 type Epoch @entity {
-  id: ID!
+  id: ID! # epoch counter
   startTime: BigInt!
   duration: BigInt
   totalStaked: BigInt!
@@ -46,4 +33,21 @@ type MinStakeAmount @entity {
   amount: BigInt!
   updatedAt: BigInt!
   blockNumber: BigInt!
+}
+
+type EpochCounter @entity {
+  id: ID!
+  count: Int!
+}
+
+type Delegation @entity {
+  id: ID!
+  delegator: Bytes! # address
+  delegate: Bytes! # address
+}
+
+type ConfirmedOperator @entity {
+  id: ID!
+  stakingProvider: Bytes! # address
+  operator: Bytes! # address
 }
