@@ -6,7 +6,14 @@ import {
   Staked,
   ToppedUp,
   Unstaked,
-  DelegateChanged
+  DelegateChanged,
+  TopUpKeepCall,
+  TopUpNuCall,
+  TopUpCall,
+  UnstakeKeepCall,
+  UnstakeAllCall,
+  UnstakeNuCall,
+  UnstakeTCall,
 } from "../generated/TokenStaking/TokenStaking"
 import {
   StakeData,
@@ -47,10 +54,15 @@ export function handleStaked(event: Staked): void {
     account.save()
   }
 
+  const stakeAmount =  event.params.amount
   stakeData.stakeType = type
   stakeData.owner = account.id
   stakeData.beneficiary = event.params.beneficiary
   stakeData.authorizer = event.params.authorizer
+  stakeData.tStake = type === "T" ? stakeAmount : BigInt.zero()
+  stakeData.nuInTStake = type === "NU" ? stakeAmount : BigInt.zero()
+  stakeData.keepInTStake = type === "KEEP" ? stakeAmount : BigInt.zero()
+  stakeData.totalStaked = stakeData.tStake.plus(stakeData.keepInTStake).plus(stakeData.nuInTStake)
   stakeData.save()
 
   const lastEpochId = (epochCounter.count - 1).toString()
@@ -99,9 +111,34 @@ export function handleStaked(event: Staked): void {
   epochCounter.save()
 }
 
+export function handleTopUpKeep(call: TopUpKeepCall): void {
+  const stakeData = StakeData.load(call.inputs.stakingProvider.toHexString()) as StakeData
+  // TODO: how to get the amount?
+  const amount = BigInt.zero()
+  stakeData.keepInTStake = stakeData.keepInTStake.plus(amount)
+  stakeData.save()
+}
+
+export function handleTopUpNu(call: TopUpNuCall): void {
+  const stakeData = StakeData.load(call.inputs.stakingProvider.toHexString()) as StakeData
+  // TODO: how to get the amount?
+  const amount = BigInt.zero()
+  stakeData.nuInTStake = stakeData.keepInTStake.plus(amount)
+  stakeData.save()
+}
+
+export function handleTopUpT(call: TopUpCall ): void {
+  const stakeData = StakeData.load(call.inputs.stakingProvider.toHexString()) as StakeData
+  stakeData.tStake = stakeData.tStake.plus(call.inputs.amount)
+  stakeData.save()
+}
 
 export function handleToppedUp(event: ToppedUp): void {
   const blockTimestamp = event.block.timestamp
+
+  const stakeData = StakeData.load(event.params.stakingProvider.toHexString()) as StakeData
+  stakeData.totalStaked = stakeData.totalStaked.plus(event.params.amount)
+  stakeData.save()
 
   let epochCounter = EpochCounter.load("Singleton")
   const lastEpochId = (epochCounter!.count - 1).toString()
@@ -158,9 +195,42 @@ export function handleToppedUp(event: ToppedUp): void {
   epochCounter!.save()
 }
 
+export function handleUnstakeKeep(call: UnstakeKeepCall): void {
+  const stakeData = StakeData.load(call.inputs.stakingProvider.toHexString()) as StakeData
+  // The legacy KEEP stake can be unstaked only in full amount so we can set
+  // `keepInTStake` to `0`.
+  stakeData.keepInTStake = BigInt.zero()
+  stakeData.save()
+}
+
+export function handleUnstakeNu(call: UnstakeNuCall): void {
+  const stakeData = StakeData.load(call.inputs.stakingProvider.toHexString()) as StakeData
+  stakeData.nuInTStake = stakeData.keepInTStake.minus(call.inputs.amount)
+  stakeData.save()
+}
+
+export function handleUnstakeT(call: UnstakeTCall ): void {
+  const stakeData = StakeData.load(call.inputs.stakingProvider.toHexString()) as StakeData
+  stakeData.tStake = stakeData.tStake.minus(call.inputs.amount)
+  stakeData.save()
+}
+
+export function handleUnstakeAll(call: UnstakeAllCall): void {
+  const stakeData = StakeData.load(call.inputs.stakingProvider.toHexString()) as StakeData
+  
+  stakeData.tStake = BigInt.zero()
+  stakeData.nuInTStake = BigInt.zero()
+  stakeData.keepInTStake = BigInt.zero()
+
+  stakeData.save()
+}
 
 export function handleUnstaked(event: Unstaked): void {
   const blockTimestamp = event.block.timestamp
+
+  const stakeData = StakeData.load(event.params.stakingProvider.toHexString()) as StakeData
+  stakeData.totalStaked = stakeData.totalStaked.minus(event.params.amount)
+  stakeData.save()
 
   let epochCounter = EpochCounter.load("Singleton")
   const lastEpochId = (epochCounter!.count - 1).toString()

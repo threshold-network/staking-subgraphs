@@ -18,6 +18,10 @@ type StakeData @entity {
   stakeType: StakeType!
   beneficiary: Bytes! # address
   authorizer: Bytes! # address
+  tStake: BigInt!
+  keepInTStake: BigInt!
+  nuInTStake: BigInt!
+  totalStaked: BigInt!
   delegatee: StakeDelegation
 }
 
