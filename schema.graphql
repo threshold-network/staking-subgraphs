@@ -7,14 +7,14 @@ enum StakeType {
 type Account @entity {
   # Id is the ethereum address of the account.
   id: ID!
+  stakes: [StakeData!] @derivedFrom(field: "owner")
   # TODO add more fields example `tokenBalances`.
 }
 
 type StakeData @entity {
   id: ID! # staking provider address
+  owner: Account! # address
   stakeType: StakeType!
-  owner: Bytes! # address
-  stakingProvider: Bytes! # address
   beneficiary: Bytes! # address
   authorizer: Bytes! # address
 }
