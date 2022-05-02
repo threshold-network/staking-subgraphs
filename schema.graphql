@@ -4,6 +4,12 @@ enum StakeType {
   T
 }
 
+type Account @entity {
+  # Id is the ethereum address of the account.
+  id: ID!
+  # TODO add more fields example `tokenBalances`.
+}
+
 type StakeData @entity {
   id: ID! # staking provider address
   stakeType: StakeType!
