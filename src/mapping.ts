@@ -14,7 +14,8 @@ import {
   Epoch,
   EpochStake,
   Delegation,
-  ConfirmedOperator
+  ConfirmedOperator,
+  Account,
 } from "../generated/schema"
 
 
@@ -39,9 +40,15 @@ export function handleStaked(event: Staked): void {
     default:
       type = "T"
   }
+  const owner = event.params.owner
+  let account = Account.load(owner.toHexString())
+  if(!account) {
+    account = new Account(owner.toHexString())
+    account.save()
+  }
+
   stakeData.stakeType = type
-  stakeData.owner = event.params.owner
-  stakeData.stakingProvider = event.params.stakingProvider
+  stakeData.owner = account.id
   stakeData.beneficiary = event.params.beneficiary
   stakeData.authorizer = event.params.authorizer
   stakeData.save()
