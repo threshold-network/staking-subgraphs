@@ -1,4 +1,4 @@
-import { crypto, ByteArray } from "@graphprotocol/graph-ts"
+import { crypto, ByteArray, BigInt } from "@graphprotocol/graph-ts"
 import {
   OperatorConfirmed
 } from "../generated/SimplePREApplication/SimplePREApplication"
@@ -13,7 +13,7 @@ import {
   EpochCounter,
   Epoch,
   EpochStake,
-  Delegation,
+  StakeDelegation,
   ConfirmedOperator,
   Account,
 } from "../generated/schema"
@@ -209,13 +209,22 @@ export function handleUnstaked(event: Unstaked): void {
 
 
 export function handleDelegateChanged(event: DelegateChanged): void {
-  let delegation = Delegation.load(event.params.delegator.toHexString())
-  if (!delegation) {
-    delegation = new Delegation(event.params.delegator.toHexString())
+  let delegatee = event.params.toDelegate
+  let stakeDelegation = StakeDelegation.load(delegatee.toHexString())
+
+  if (!stakeDelegation) {
+    stakeDelegation = new StakeDelegation(delegatee.toHexString())
   }
-  delegation.delegator = event.params.delegator
-  delegation.delegate = event.params.toDelegate
-  delegation.save()
+  // It's not possible to delegate voting power if a stake doesn't exist so we
+  // can force the type. The `delegator` is always a staking provider in the
+  // `TTokenStaking` contract.
+  const stake = StakeData.load(event.params.delegator.toHexString()) as StakeData
+  stake.delegatee = stakeDelegation.id
+  stake.save()
+  // TODO: Set the total weight. Take into account all stakes because stake
+  // owners can delagate the voting power to the same `delegatee`.
+  stakeDelegation.totalWeight = BigInt.zero()
+  stakeDelegation.save()
 }
 
 
