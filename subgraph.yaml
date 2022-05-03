@@ -30,21 +30,6 @@ dataSources:
           handler: handleUnstaked
         - event: DelegateChanged(indexed address,indexed address,indexed address)
           handler: handleDelegateChanged
-      callHandlers:
-        - function: topUpKeep(address)
-          handler: handleTopUpKeep
-        - function: topUpNu(address)
-          handler: handleTopUpNu
-        - function: topUp(address,uint96)
-          handler: handleTopUpT
-        - function: unstakeKeep(address)
-          handler: handleUnstakeKeep
-        - function: unstakeT(address,uint96)
-          handler: handleUnstakeT
-        - function: unstakeNu(address,uint96)
-          handler: handleUnstakeNu
-        - function: unstakeAll(address)
-          handler: handleUnstakeAll
       file: ./src/mapping.ts
   - kind: ethereum
     name: SimplePREApplication
