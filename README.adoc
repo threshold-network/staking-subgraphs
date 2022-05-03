@@ -67,7 +67,7 @@ graph deploy --studio
 == GraphQL query examples
 Current temporary query URL:
 
-https://api.studio.thegraph.com/query/24143/threshold/0.0.2
+https://api.studio.thegraph.com/query/24143/threshold/0.0.3
 
 === Check current stakes
 ```
