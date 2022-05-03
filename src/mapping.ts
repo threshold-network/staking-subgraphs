@@ -6,6 +6,7 @@ import {
   Unstaked,
   DelegateChanged,
   TokenStaking,
+  DelegateVotesChanged,
 } from "../generated/TokenStaking/TokenStaking"
 import {
   StakeData,
@@ -353,9 +354,18 @@ export function handleDelegateChanged(event: DelegateChanged): void {
   ) as StakeData
   stake.delegatee = stakeDelegation.id
   stake.save()
-  // TODO: Set the total weight. Take into account all stakes because stake
-  // owners can delagate the voting power to the same `delegatee`.
-  stakeDelegation.totalWeight = BigInt.zero()
+  stakeDelegation.save()
+}
+
+export function handleDelegateVotesChanged(event: DelegateVotesChanged): void {
+  let delegatee = event.params.delegate
+  let stakeDelegation = StakeDelegation.load(delegatee.toHexString())
+
+  if (!stakeDelegation) {
+    stakeDelegation = new StakeDelegation(delegatee.toHexString())
+  }
+
+  stakeDelegation.totalWeight = event.params.newBalance
   stakeDelegation.save()
 }
 

@@ -30,6 +30,8 @@ dataSources:
           handler: handleUnstaked
         - event: DelegateChanged(indexed address,indexed address,indexed address)
           handler: handleDelegateChanged
+        - event: DelegateVotesChanged(indexed address,uint256,uint256)
+          handler: handleDelegateVotesChanged
       file: ./src/mapping.ts
   - kind: ethereum
     name: SimplePREApplication
