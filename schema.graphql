@@ -70,6 +70,7 @@ type TokenholderDelegation implements Delegation @entity {
   #   tokenholders' voting power, but not for the total voting power of the
   #   Tokenholder DAO."
   totalWeight: BigInt!
+  liquidWeight: BigInt!
   delegators: [Account!] @derivedFrom(field: "delegatee")
 }
 
