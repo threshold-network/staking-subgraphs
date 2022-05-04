@@ -6,7 +6,8 @@ import {
   Staked,
   ToppedUp,
   Unstaked,
-  DelegateChanged
+  DelegateChanged,
+  MinimumStakeAmountSet,
 } from "../generated/TokenStaking/TokenStaking"
 import {
   StakeData,
@@ -14,7 +15,8 @@ import {
   Epoch,
   EpochStake,
   Delegation,
-  ConfirmedOperator
+  ConfirmedOperator,
+  MinStakeAmount,
 } from "../generated/schema"
 
 
@@ -220,4 +222,20 @@ export function handleOperatorConfirmed(event: OperatorConfirmed): void {
   operator.stakingProvider = event.params.stakingProvider
   operator.operator = event.params.operator
   operator.save()
+}
+
+export function handleMinStakeAmountChanged(
+  event: MinimumStakeAmountSet
+): void {
+  const id = `min-stake-${event.transaction.hash.toHexString()}`
+
+  let minStake = MinStakeAmount.load(id)
+  if (!minStake) {
+    minStake = new MinStakeAmount(id)
+  }
+
+  minStake.amount = event.params.amount
+  minStake.blockNumber = event.block.number
+  minStake.updatedAt = event.block.timestamp
+  minStake.save()
 }
