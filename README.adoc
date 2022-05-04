@@ -67,7 +67,7 @@ graph deploy --studio
 == GraphQL query examples
 Current temporary query URL:
 
-https://api.studio.thegraph.com/query/24143/threshold/0.0.2
+https://api.studio.thegraph.com/query/24143/threshold/0.0.3
 
 === Check current stakes
 ```
@@ -115,6 +115,31 @@ https://api.studio.thegraph.com/query/24143/threshold/0.0.2
 }
 ```
 
+=== Get stakes of a specific epoch
+```
+{
+  epoches(
+    orderBy: startTime
+    orderDirection: desc
+    first: 1
+    where: {startTime_lte: "<TIMESTAMP"}
+  ) {
+    totalStaked
+    stakes {
+      amount
+      participation
+      stakeData {
+        stakingProvider
+        owner
+        stakeType
+        authorizer
+        beneficiary
+      }
+    }
+  }
+}
+```
+
 == Test the subgraph locally
 
 === Run local chain eg. Ganache
@@ -138,7 +163,7 @@ local chain.
 
 === Update the subgraph manifest
 
-Set the correct `addrres` and `startBlock` for contracts in `subgraph.yaml`
+Set the correct `address` and `startBlock` for contracts in `subgraph.yaml`
 file.
 
 === Run a local Graph Node

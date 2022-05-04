@@ -28,6 +28,8 @@ dataSources:
           handler: handleToppedUp
         - event: Unstaked(indexed address,uint96)
           handler: handleUnstaked
+        - event: MinimumStakeAmountSet(uint96)
+          handler: handleMinStakeAmountChanged
         - event: DelegateChanged(indexed address,indexed address,indexed address)
           handler: handleDelegateChanged
         - event: DelegateVotesChanged(indexed address,uint256,uint256)

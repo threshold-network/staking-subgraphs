@@ -40,6 +40,13 @@ type Epoch @entity {
   stakes: [EpochStake!]!
 }
 
+type MinStakeAmount @entity {
+  id: ID!
+  amount: BigInt!
+  updatedAt: BigInt!
+  blockNumber: BigInt!
+}
+
 type EpochCounter @entity {
   id: ID!
   count: Int!
