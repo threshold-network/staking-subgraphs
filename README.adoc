@@ -163,7 +163,7 @@ local chain.
 
 === Update the subgraph manifest
 
-Set the correct `addrres` and `startBlock` for contracts in `subgraph.yaml`
+Set the correct `address` and `startBlock` for contracts in `subgraph.yaml`
 file.
 
 === Run a local Graph Node
