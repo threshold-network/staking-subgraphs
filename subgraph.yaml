@@ -51,10 +51,10 @@ dataSources:
         - name: ThresholdToken
           file: ./abis/T.json
       eventHandlers:
-      - event: DelegateChanged(indexed address,indexed address,indexed address)
-        handler: handleDelegateChanged
-      - event: DelegateVotesChanged(indexed address,uint256,uint256)
-        handler: handleDelegateVotesChanged
+        - event: DelegateChanged(indexed address,indexed address,indexed address)
+          handler: handleDelegateChanged
+        - event: DelegateVotesChanged(indexed address,uint256,uint256)
+          handler: handleDelegateVotesChanged
       file: ./src/threshold-token.ts
   - kind: ethereum
     name: SimplePREApplication
