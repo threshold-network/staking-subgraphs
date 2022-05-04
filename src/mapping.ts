@@ -13,10 +13,13 @@ import {
   EpochCounter,
   Epoch,
   EpochStake,
-  StakeDelegation,
   ConfirmedOperator,
   Account,
 } from "../generated/schema"
+import {
+  getOrCreateStakeDelegation,
+  getOrCreateTokenholderDelegation,
+} from "./utils"
 
 export function handleStaked(event: Staked): void {
   const blockTimestamp = event.block.timestamp
@@ -340,12 +343,8 @@ export function handleUnstaked(event: Unstaked): void {
 }
 
 export function handleDelegateChanged(event: DelegateChanged): void {
-  let delegatee = event.params.toDelegate
-  let stakeDelegation = StakeDelegation.load(delegatee.toHexString())
-
-  if (!stakeDelegation) {
-    stakeDelegation = new StakeDelegation(delegatee.toHexString())
-  }
+  const delegatee = event.params.toDelegate
+  const stakeDelegation = getOrCreateStakeDelegation(delegatee)
   // It's not possible to delegate voting power if a stake doesn't exist so we
   // can force the type. The `delegator` is always a staking provider in the
   // `TTokenStaking` contract.
@@ -358,15 +357,17 @@ export function handleDelegateChanged(event: DelegateChanged): void {
 }
 
 export function handleDelegateVotesChanged(event: DelegateVotesChanged): void {
-  let delegatee = event.params.delegate
-  let stakeDelegation = StakeDelegation.load(delegatee.toHexString())
-
-  if (!stakeDelegation) {
-    stakeDelegation = new StakeDelegation(delegatee.toHexString())
-  }
+  const delegatee = event.params.delegate
+  const stakeDelegation = getOrCreateStakeDelegation(delegatee)
 
   stakeDelegation.totalWeight = event.params.newBalance
   stakeDelegation.save()
+
+  const tokenholderDelegation = getOrCreateTokenholderDelegation(delegatee)
+  tokenholderDelegation.totalWeight = tokenholderDelegation.liquidWeight.plus(
+    stakeDelegation.totalWeight
+  )
+  tokenholderDelegation.save()
 }
 
 export function handleOperatorConfirmed(event: OperatorConfirmed): void {
