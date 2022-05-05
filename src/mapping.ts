@@ -19,6 +19,7 @@ import {
   MinStakeAmount,
 } from "../generated/schema"
 import {
+  getDaoMetric,
   getOrCreateStakeDelegation,
   getOrCreateTokenholderDelegation,
 } from "./utils"
@@ -370,6 +371,11 @@ export function handleDelegateVotesChanged(event: DelegateVotesChanged): void {
     stakeDelegation.totalWeight
   )
   tokenholderDelegation.save()
+
+  const daoMetric = getDaoMetric()
+  const difference = event.params.newBalance.minus(event.params.previousBalance)
+  daoMetric.stakedTotal = daoMetric.stakedTotal.plus(difference)
+  daoMetric.save()
 }
 
 export function handleOperatorConfirmed(event: OperatorConfirmed): void {

@@ -4,7 +4,11 @@ import {
   DelegateVotesChanged,
 } from "../generated/ThresholdToken/ThresholdToken"
 import { StakeDelegation, Account } from "../generated/schema"
-import { getOrCreateTokenholderDelegation, getStakeDelegationId } from "./utils"
+import {
+  getDaoMetric,
+  getOrCreateTokenholderDelegation,
+  getStakeDelegationId,
+} from "./utils"
 
 export function handleDelegateChanged(event: DelegateChanged): void {
   const delegatee = event.params.toDelegate
@@ -36,6 +40,11 @@ export function handleDelegateVotesChanged(event: DelegateVotesChanged): void {
     getTotalWeightOfStakeDelegation(delegatee)
   )
   delegation.save()
+
+  const daoMetric = getDaoMetric()
+  const difference = event.params.newBalance.minus(event.params.previousBalance)
+  daoMetric.liquidTotal = daoMetric.liquidTotal.plus(difference)
+  daoMetric.save()
 }
 
 function getTotalWeightOfStakeDelegation(delegate: Address): BigInt {

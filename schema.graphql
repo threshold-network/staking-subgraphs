@@ -1,6 +1,6 @@
 enum StakeType {
-  NU,
-  KEEP,
+  NU
+  KEEP
   T
 }
 
@@ -85,4 +85,11 @@ type ConfirmedOperator @entity {
   id: ID!
   stakingProvider: Bytes! # address
   operator: Bytes! # address
+}
+
+type DAOMetric @entity {
+  "Singleton entity, id = dao-metrics"
+  id: ID!
+  liquidTotal: BigInt!
+  stakedTotal: BigInt!
 }

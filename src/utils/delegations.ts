@@ -1,8 +1,13 @@
 import { Address } from "@graphprotocol/graph-ts"
-import { StakeDelegation, TokenholderDelegation } from "../../generated/schema"
+import {
+  StakeDelegation,
+  TokenholderDelegation,
+  DAOMetric,
+} from "../../generated/schema"
 
 const STAKE_DELEGATION_ID_PREFIX = "stake-delegation-"
 const TOKEN_HOLDER_DELEGATION_ID_PREFIX = "tokenholder-delegation-"
+const DAO_METRICS_ID = "dao-metrics"
 
 export function getStakeDelegationId(delegate: Address): string {
   return `${STAKE_DELEGATION_ID_PREFIX}${delegate.toHexString()}`
@@ -26,4 +31,10 @@ export function getOrCreateTokenholderDelegation(
   const delegation = TokenholderDelegation.load(id)
 
   return !delegation ? new TokenholderDelegation(id) : delegation
+}
+
+export function getDaoMetric(): DAOMetric {
+  const metrics = DAOMetric.load(DAO_METRICS_ID)
+
+  return !metrics ? new DAOMetric(DAO_METRICS_ID) : metrics
 }

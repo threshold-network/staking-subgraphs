@@ -49,6 +49,7 @@ dataSources:
       entities:
         - StakeDelegation
         - TokenholderDelegation
+        - DAOMetric
       abis:
         - name: ThresholdToken
           file: ./abis/T.json
