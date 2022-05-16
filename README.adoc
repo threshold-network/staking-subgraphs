@@ -151,12 +151,37 @@ on. If you use a ganache-cli run the node with `ganache-cli -h 0.0.0.0`. If you
 use a Ganche in GUI version go to `settings -> server ` and set `HOSTNAME` to
 `0.0.0.0 - All Interfaces`.
 
+=== Deploy the Keep Core contracts to local chain
+
 === Deploy the Threshold Network contracts to local chain
 
 Clone https://github.com/threshold-network/solidity-contracts repo and make sure
-the development network config in
+the `development` network config in
 https://github.com/threshold-network/solidity-contracts/blob/main/hardhat.config.ts#L42-L44[hardhat.config.ts]
 is correct for your local chain.
+
+NOTE: The deployment scripts assume the `keep-core` contract are already
+deployed to your local chain.
+
+==== Deploy the Keep Core contracts to local chain
+
+Clone https://github.com/keep-network/keep-core repo and make sure the
+`development` network config in
+https://github.com/keep-network/keep-core/blob/main/solidity-v1/truffle-config.js#L8-L12[truffle-config.js]
+is correct for your local chain.
+
+Go to root dir and run `./scripts/install.sh --network local --contracts-only `.
+
+Go to `./solidity-v1` and run `yarn link`.
+
+==== Deploy the Threshold Network contracts
+
+Install dependencies `yarn`.
+
+Link the local `keep-core` contracts by running `yarn link
+@keep-network/keep-core`.
+
+Run `./scripts/prepare-dependencies.sh`.
 
 Run `yarn deploy --network development --reset` to deploy contracts to your
 local chain.
