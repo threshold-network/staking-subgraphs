@@ -13,11 +13,12 @@ type Account @entity {
 }
 
 type StakeData @entity {
-  id: ID! # staking provider address
-  owner: Account! # address
+  # Staking provider address.
+  id: ID!
+  owner: Account!
   stakeType: StakeType!
-  beneficiary: Bytes! # address
-  authorizer: Bytes! # address
+  beneficiary: Bytes!
+  authorizer: Bytes!
   tStake: BigInt!
   keepInTStake: BigInt!
   nuInTStake: BigInt!
