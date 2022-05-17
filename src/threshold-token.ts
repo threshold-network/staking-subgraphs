@@ -10,7 +10,7 @@ export function handleDelegateChanged(event: DelegateChanged): void {
   const delegatee = event.params.toDelegate
   const delegator = event.params.delegator
 
-  let delegation = getOrCreateTokenholderDelegation(delegatee)
+  const delegation = getOrCreateTokenholderDelegation(delegatee)
 
   let account = Account.load(delegator.toHexString())
   if (!account) {
@@ -20,16 +20,12 @@ export function handleDelegateChanged(event: DelegateChanged): void {
   account.delegatee = delegation.id
   account.save()
 
-  delegation.liquidWeight = BigInt.zero()
-  delegation.totalWeight = delegation.liquidWeight.plus(
-    getTotalWeightOfStakeDelegation(delegatee)
-  )
   delegation.save()
 }
 
 export function handleDelegateVotesChanged(event: DelegateVotesChanged): void {
-  let delegatee = event.params.delegate
-  let delegation = getOrCreateTokenholderDelegation(delegatee)
+  const delegatee = event.params.delegate
+  const delegation = getOrCreateTokenholderDelegation(delegatee)
 
   delegation.liquidWeight = event.params.newBalance
   delegation.totalWeight = delegation.liquidWeight.plus(
