@@ -148,10 +148,11 @@ Note that host set to `0.0.0.0` is necessary for Ganache to be accessible from
 within Docker and from other machines. By default, Ganache only binds to
 127.0.0.1, which can only be accessed from the host machine that Ganache runs
 on. If you use a ganache-cli run the node with `ganache-cli -h 0.0.0.0`. If you
-use a Ganche in GUI version go to `settings -> server ` and set `HOSTNAME` to
-`0.0.0.0 - All Interfaces`.
-
-=== Deploy the Keep Core contracts to local chain
+use a Ganche in GUI version go to `settings -> server` and set `HOSTNAME` to
+`0.0.0.0 - All Interfaces`. Make sure the network ID is the same as chaind ID.
+By default, ganache sets the chaind ID to `1337`. To change the network ID in
+Ganache GUI go to `settings -> server` and set `NETWORK ID` to `1337`. If you
+use a ganache-cli run a node with flag `-i 1337`.
 
 === Deploy the Threshold Network contracts to local chain
 
@@ -166,11 +167,11 @@ deployed to your local chain.
 ==== Deploy the Keep Core contracts to local chain
 
 Clone https://github.com/keep-network/keep-core repo and make sure the
-`development` network config in
+`local` network config in
 https://github.com/keep-network/keep-core/blob/main/solidity-v1/truffle-config.js#L8-L12[truffle-config.js]
 is correct for your local chain.
 
-Go to root dir and run `./scripts/install.sh --network local --contracts-only `.
+Go to root dir and run `./scripts/install.sh --network local --contracts-only`.
 
 Go to `./solidity-v1` and run `yarn link`.
 
