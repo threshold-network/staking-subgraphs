@@ -22,7 +22,7 @@ type StakeData @entity {
 type EpochStake @entity {
   # ID is the staking prov. add. + epoch counter
   id: ID!
-  stakingProvider: Bytes! # address
+  stakingProvider: Bytes!
   amount: BigInt!
 }
 
@@ -77,10 +77,11 @@ type TokenholderDelegation implements Delegation @entity {
   delegators: [Account!] @derivedFrom(field: "delegatee")
 }
 
-type ConfirmedOperator @entity {
+type PREOperator @entity {
+  # ID is the staking provider address
   id: ID!
-  stakingProvider: Bytes! # address
-  operator: Bytes! # address
+  operator: Bytes!
+  confirmationTimestamp: BigInt
 }
 
 type DAOMetric @entity {

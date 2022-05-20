@@ -1,5 +1,8 @@
 import { crypto, ByteArray, BigInt, log } from "@graphprotocol/graph-ts"
-import { OperatorConfirmed } from "../generated/SimplePREApplication/SimplePREApplication"
+import {
+  OperatorBonded,
+  OperatorConfirmed,
+} from "../generated/SimplePREApplication/SimplePREApplication"
 import {
   Staked,
   ToppedUp,
@@ -13,9 +16,9 @@ import {
   StakeData,
   Epoch,
   EpochStake,
-  ConfirmedOperator,
   Account,
   MinStakeAmount,
+  PREOperator,
 } from "../generated/schema"
 import {
   getDaoMetric,
@@ -68,7 +71,7 @@ export function handleStaked(event: Staked): void {
   lastEpoch.save()
 
   const epochStakes = populateNewEpochStakes(lastEpoch.stakes)
-  const epochStakeId = getEpochStakeId(stakingProvider.toHexString())
+  const epochStakeId = getEpochStakeId(stakingProvider)
   const epochStake = new EpochStake(epochStakeId)
   epochStake.stakingProvider = stakingProvider
   epochStake.amount = stakeAmount
@@ -138,7 +141,7 @@ export function handleToppedUp(event: ToppedUp): void {
   lastEpoch.save()
 
   const epochStakes = populateNewEpochStakes(lastEpoch.stakes)
-  const epochStakeId = getEpochStakeId(stakingProvider.toHexString())
+  const epochStakeId = getEpochStakeId(stakingProvider)
   let epochStake = EpochStake.load(epochStakeId)
   if (!epochStake) {
     epochStake = new EpochStake(epochStakeId)
@@ -222,7 +225,7 @@ export function handleUnstaked(event: Unstaked): void {
   lastEpoch.save()
 
   const epochStakes = populateNewEpochStakes(lastEpoch.stakes)
-  const epochStakeId = getEpochStakeId(stakingProvider.toHexString())
+  const epochStakeId = getEpochStakeId(stakingProvider)
   const epochStake = EpochStake.load(epochStakeId)
   epochStake!.amount = epochStake!.amount.minus(amount)
   epochStake!.save()
@@ -272,16 +275,21 @@ export function handleDelegateVotesChanged(event: DelegateVotesChanged): void {
   daoMetric.save()
 }
 
-export function handleOperatorConfirmed(event: OperatorConfirmed): void {
-  let operator = ConfirmedOperator.load(
+export function handleOperatorBonded(event: OperatorBonded): void {
+  const preOperator = new PREOperator(
     event.params.stakingProvider.toHexString()
   )
-  if (!operator) {
-    operator = new ConfirmedOperator(event.params.stakingProvider.toHexString())
-  }
-  operator.stakingProvider = event.params.stakingProvider
-  operator.operator = event.params.operator
-  operator.save()
+  preOperator.operator = event.params.operator
+  preOperator.save()
+}
+
+export function handleOperatorConfirmed(event: OperatorConfirmed): void {
+  const preOperator = new PREOperator(
+    event.params.stakingProvider.toHexString()
+  )
+  preOperator.operator = event.params.operator
+  preOperator.confirmationTimestamp = event.block.timestamp
+  preOperator.save()
 }
 
 export function handleMinStakeAmountChanged(
