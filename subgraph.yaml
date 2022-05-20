@@ -71,11 +71,13 @@ dataSources:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Operator
+        - PREOperator
       abis:
         - name: SimplePREApplication
           file: ./abis/SimplePREApplication.json
       eventHandlers:
         - event: OperatorConfirmed(indexed address,indexed address)
           handler: handleOperatorConfirmed
+        - event: OperatorBonded(indexed address,indexed address,uint256)
+          handler: handleOperatorBonded
       file: ./src/mapping.ts

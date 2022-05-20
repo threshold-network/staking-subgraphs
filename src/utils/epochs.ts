@@ -1,12 +1,15 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { Address, BigInt } from "@graphprotocol/graph-ts"
 import { Epoch, EpochStake, EpochCounter } from "../../generated/schema"
 
 const STAKING_CONTRACT_DEPLOY_TIMESTAMP = 1643633638
 const EPOCH_COUNTER_ID = "epoch-counter"
 
-export function getEpochStakeId(stakingProvider: string): string {
-  const epochCount = getEpochCount()
-  return `${stakingProvider}-${epochCount}`
+export function getEpochStakeId(
+  stakingProvider: Address,
+  epoch: i32 = -1
+): string {
+  const epochCount = epoch == -1 ? getEpochCount() : epoch
+  return `${stakingProvider.toHexString()}-${epochCount}`
 }
 
 export function getOrCreateLastEpoch(): Epoch {
@@ -27,7 +30,8 @@ export function getOrCreateLastEpoch(): Epoch {
 export function populateNewEpochStakes(stakes: string[]): string[] {
   for (let i = 0; i < stakes.length; i++) {
     const epochStake = EpochStake.load(stakes[i])
-    epochStake!.id = getEpochStakeId(epochStake!.stakingProvider.toHexString())
+    const stakingProvider = Address.fromBytes(epochStake!.stakingProvider)
+    epochStake!.id = getEpochStakeId(stakingProvider)
     epochStake!.save()
     stakes[i] = epochStake!.id
   }
