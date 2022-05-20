@@ -32,7 +32,32 @@ dataSources:
           handler: handleMinStakeAmountChanged
         - event: DelegateChanged(indexed address,indexed address,indexed address)
           handler: handleDelegateChanged
+        - event: DelegateVotesChanged(indexed address,uint256,uint256)
+          handler: handleDelegateVotesChanged
       file: ./src/mapping.ts
+  - kind: ethereum
+    name: ThresholdToken
+    network: mainnet
+    source:
+      address: "0xCdF7028ceAB81fA0C6971208e83fa7872994beE5"
+      abi: ThresholdToken
+      startBlock: 13912436
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - StakeDelegation
+        - TokenholderDelegation
+      abis:
+        - name: ThresholdToken
+          file: ./abis/T.json
+      eventHandlers:
+        - event: DelegateChanged(indexed address,indexed address,indexed address)
+          handler: handleDelegateChanged
+        - event: DelegateVotesChanged(indexed address,uint256,uint256)
+          handler: handleDelegateVotesChanged
+      file: ./src/threshold-token.ts
   - kind: ethereum
     name: SimplePREApplication
     network: mainnet
