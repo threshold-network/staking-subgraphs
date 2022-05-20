@@ -64,8 +64,10 @@ export function handleStaked(event: Staked): void {
   stakeData.keepInTStake = type === "KEEP" ? amount : BigInt.zero()
   stakeData.nuInTStake = type === "NU" ? amount : BigInt.zero()
   stakeData.totalStaked = stakeData.tStake
-    .plus(stakeData.keepInTStake)
-    .plus(stakeData.nuInTStake)
+  stakeData.nuInTStake =
+    type === "NU"
+      ? amount
+      : BigInt.zero().plus(stakeData.keepInTStake).plus(stakeData.nuInTStake)
   stakeData.save()
 
   const lastEpoch = getOrCreateLastEpoch()
