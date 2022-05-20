@@ -51,13 +51,12 @@ export function handleStaked(event: Staked): void {
     account.save()
   }
 
-  stakeData.stakeType = type
   stakeData.owner = account.id
   stakeData.beneficiary = event.params.beneficiary
   stakeData.authorizer = event.params.authorizer
   stakeData.tStake = type === "T" ? stakeAmount : BigInt.zero()
-  stakeData.nuInTStake = type === "NU" ? stakeAmount : BigInt.zero()
   stakeData.keepInTStake = type === "KEEP" ? stakeAmount : BigInt.zero()
+  stakeData.nuInTStake = type === "NU" ? stakeAmount : BigInt.zero()
   stakeData.totalStaked = stakeData.tStake
     .plus(stakeData.keepInTStake)
     .plus(stakeData.nuInTStake)
