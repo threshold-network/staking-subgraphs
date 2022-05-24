@@ -65,11 +65,13 @@ export function handleStaked(event: Staked): void {
   lastEpoch.duration = timestamp.minus(lastEpoch.timestamp);
   lastEpoch.save();
 
+  // TODO: MOVE THIS TO epochs.ts
   const epochStakes = lastEpoch.stakes;
   for (let i = 0; i < epochStakes.length; i++) {
     const epochStake = EpochStake.load(epochStakes[i]);
-    epochStake!.id = getEpochStakeId(epochStake!.id);
+    epochStake!.id = getEpochStakeId(epochStake!.stakingProvider.toHexString());
     epochStake!.save();
+    epochStakes[i] = epochStake!.id
   }
 
   const epochStakeId = getEpochStakeId(
@@ -208,7 +210,6 @@ export function handleToppedUp(event: ToppedUp): void {
 }
 
 export function handleUnstaked(event: Unstaked): void {
-  const blockTimestamp = event.block.timestamp;
   const unstakeFunctionId = ByteArray.fromHexString(
     event.transaction.input.toHexString().substring(0, 10)
   );
@@ -263,57 +264,37 @@ export function handleUnstaked(event: Unstaked): void {
     stakeData.keepInTStake = stakes.value1;
     stakeData.nuInTStake = stakes.value2;
   }
-
   stakeData.save();
 
-  const epochCounter = getEpochCounter();
-  const lastEpochId = (epochCounter.count - 1).toString();
-  let lastEpoch = Epoch.load(lastEpochId);
+  const lastEpoch = getOrCreateLastEpoch();
+  const timestamp = event.block.timestamp;
+  lastEpoch.duration = timestamp.minus(lastEpoch.timestamp);
+  lastEpoch.save();
 
-  const totalStaked = lastEpoch!.totalStaked.minus(event.params.amount);
-  let emptyStakeArrayIndex: i32 = -1;
-  let epochStakes: string[] = [];
-
-  lastEpoch!.duration = blockTimestamp.minus(lastEpoch!.startTime);
-  lastEpoch!.save();
-
-  epochStakes = lastEpoch!.stakes;
+  // TODO: MOVE THIS TO epochs.ts
+  const epochStakes = lastEpoch.stakes;
   for (let i = 0; i < epochStakes.length; i++) {
-    let epochStake = EpochStake.load(epochStakes[i]);
-    const epStId = crypto
-      .keccak256(
-        ByteArray.fromUTF8(
-          epochStake!.stakeData + epochCounter.count.toString()
-        )
-      )
-      .toHexString();
-    epochStake!.id = epStId;
-
-    // If this stake is the one to be unstaked, decrease the amount
-    if (epochStake!.stakeData == event.params.stakingProvider.toHexString()) {
-      epochStake!.amount = epochStake!.amount.minus(event.params.amount);
-      emptyStakeArrayIndex = epochStake!.amount.isZero() ? i : -1;
-    }
-
-    epochStake!.participation = epochStake!.amount.divDecimal(
-      totalStaked.toBigDecimal()
-    );
+    const epochStake = EpochStake.load(epochStakes[i]);
+    epochStake!.id = getEpochStakeId(epochStake!.stakingProvider.toHexString());
     epochStake!.save();
-    epochStakes[i] = epochStake!.id;
+    epochStakes[i] = epochStake!.id
   }
 
-  if (emptyStakeArrayIndex >= 0) {
-    epochStakes.splice(emptyStakeArrayIndex, 1);
+  const epochStakeId = getEpochStakeId(stakingProvider.toHexString());
+  const epochStake = EpochStake.load(epochStakeId);
+  epochStake!.amount = epochStake!.amount.minus(amount);
+  epochStake!.save();
+  if (epochStake!.amount.isZero()) {
+    epochStakes.splice(epochStakes.indexOf(epochStakeId), 1);
   }
 
-  let epoch = new Epoch(epochCounter.count.toString());
-  epoch.startTime = blockTimestamp;
-  epoch.totalStaked = totalStaked;
+  const epoch = new Epoch(getEpochCount().toString());
+  epoch.timestamp = timestamp;
+  epoch.totalAmount = lastEpoch.totalAmount.minus(amount);
   epoch.stakes = epochStakes;
   epoch.save();
 
-  epochCounter.count++;
-  epochCounter.save();
+  increaseEpochCount();
 }
 
 export function handleDelegateChanged(event: DelegateChanged): void {
