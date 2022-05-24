@@ -21,6 +21,7 @@ import {
   getDaoMetric,
   getEpochCount,
   getEpochStakeId,
+  populateNewEpochStakes,
   getOrCreateLastEpoch,
   increaseEpochCount,
   getOrCreateStakeDelegation,
@@ -28,7 +29,10 @@ import {
 } from "./utils";
 
 export function handleStaked(event: Staked): void {
-  let stakeData = new StakeData(event.params.stakingProvider.toHexString());
+  const stakingProvider = event.params.stakingProvider;
+  const stakeAmount = event.params.amount;
+
+  let stakeData = new StakeData(stakingProvider.toHexString());
   let type: string;
   switch (event.params.stakeType) {
     case 0:
@@ -47,7 +51,6 @@ export function handleStaked(event: Staked): void {
     account.save();
   }
 
-  const stakeAmount = event.params.amount;
   stakeData.stakeType = type;
   stakeData.owner = account.id;
   stakeData.beneficiary = event.params.beneficiary;
@@ -65,27 +68,17 @@ export function handleStaked(event: Staked): void {
   lastEpoch.duration = timestamp.minus(lastEpoch.timestamp);
   lastEpoch.save();
 
-  // TODO: MOVE THIS TO epochs.ts
-  const epochStakes = lastEpoch.stakes;
-  for (let i = 0; i < epochStakes.length; i++) {
-    const epochStake = EpochStake.load(epochStakes[i]);
-    epochStake!.id = getEpochStakeId(epochStake!.stakingProvider.toHexString());
-    epochStake!.save();
-    epochStakes[i] = epochStake!.id
-  }
-
-  const epochStakeId = getEpochStakeId(
-    event.params.stakingProvider.toHexString()
-  );
+  const epochStakes = populateNewEpochStakes(lastEpoch.stakes);
+  const epochStakeId = getEpochStakeId(stakingProvider.toHexString());
   const epochStake = new EpochStake(epochStakeId);
-  epochStake.stakingProvider = event.params.stakingProvider;
-  epochStake.amount = event.params.amount;
+  epochStake.stakingProvider = stakingProvider;
+  epochStake.amount = stakeAmount;
   epochStake.save();
   epochStakes.push(epochStake.id);
 
   const epoch = new Epoch(getEpochCount().toString());
   epoch.timestamp = timestamp;
-  epoch.totalAmount = lastEpoch.totalAmount.plus(event.params.amount);
+  epoch.totalAmount = lastEpoch.totalAmount.plus(stakeAmount);
   epoch.stakes = epochStakes;
   epoch.save();
 
@@ -210,11 +203,12 @@ export function handleToppedUp(event: ToppedUp): void {
 }
 
 export function handleUnstaked(event: Unstaked): void {
+  const stakingProvider = event.params.stakingProvider;
+  const amount = event.params.amount;
+
   const unstakeFunctionId = ByteArray.fromHexString(
     event.transaction.input.toHexString().substring(0, 10)
   );
-  const stakingProvider = event.params.stakingProvider;
-  const amount = event.params.amount;
 
   const unstakeTFunctionId = ByteArray.fromHexString(
     crypto
@@ -271,15 +265,7 @@ export function handleUnstaked(event: Unstaked): void {
   lastEpoch.duration = timestamp.minus(lastEpoch.timestamp);
   lastEpoch.save();
 
-  // TODO: MOVE THIS TO epochs.ts
-  const epochStakes = lastEpoch.stakes;
-  for (let i = 0; i < epochStakes.length; i++) {
-    const epochStake = EpochStake.load(epochStakes[i]);
-    epochStake!.id = getEpochStakeId(epochStake!.stakingProvider.toHexString());
-    epochStake!.save();
-    epochStakes[i] = epochStake!.id
-  }
-
+  const epochStakes = populateNewEpochStakes(lastEpoch.stakes);
   const epochStakeId = getEpochStakeId(stakingProvider.toHexString());
   const epochStake = EpochStake.load(epochStakeId);
   epochStake!.amount = epochStake!.amount.minus(amount);

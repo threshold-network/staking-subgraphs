@@ -1,5 +1,5 @@
 import { BigInt } from "@graphprotocol/graph-ts";
-import { Epoch, EpochCounter } from "../../generated/schema";
+import { Epoch, EpochStake, EpochCounter } from "../../generated/schema";
 
 const STAKING_CONTRACT_DEPLOY_TIMESTAMP = 1643633638;
 const EPOCH_COUNTER_ID = "epoch-counter";
@@ -22,6 +22,17 @@ export function getOrCreateLastEpoch(): Epoch {
   }
 
   return lastEpoch;
+}
+
+export function populateNewEpochStakes(stakes: string[]): string[] {
+  for (let i = 0; i < stakes.length; i++) {
+    const epochStake = EpochStake.load(stakes[i]);
+    epochStake!.id = getEpochStakeId(epochStake!.stakingProvider.toHexString());
+    epochStake!.save();
+    stakes[i] = epochStake!.id;
+  }
+
+  return stakes;
 }
 
 export function getEpochCount(): i32 {
