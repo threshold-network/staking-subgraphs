@@ -86,7 +86,6 @@ export function handleStaked(event: Staked): void {
 }
 
 export function handleToppedUp(event: ToppedUp): void {
-  const blockTimestamp = event.block.timestamp;
   const stakingProvider = event.params.stakingProvider;
   const amount = event.params.amount;
 
@@ -113,10 +112,8 @@ export function handleToppedUp(event: ToppedUp): void {
       .substring(0, 10)
   );
 
-  const stakeData = StakeData.load(
-    event.params.stakingProvider.toHexString()
-  ) as StakeData;
-  stakeData.totalStaked = stakeData.totalStaked.plus(event.params.amount);
+  const stakeData = StakeData.load(stakingProvider.toHexString()) as StakeData;
+  stakeData.totalStaked = stakeData.totalStaked.plus(amount);
 
   if (topUpFunctionId.equals(topUpTFunctionId)) {
     stakeData.tStake = stakeData.tStake.plus(amount);
@@ -136,70 +133,30 @@ export function handleToppedUp(event: ToppedUp): void {
   }
   stakeData.save();
 
-  const epochCounter = getEpochCounter();
-  const lastEpochId = (epochCounter.count - 1).toString();
-  let lastEpoch = Epoch.load(lastEpochId);
+  const lastEpoch = getOrCreateLastEpoch();
+  const timestamp = event.block.timestamp;
+  lastEpoch.duration = timestamp.minus(lastEpoch.timestamp);
+  lastEpoch.save();
 
-  const totalStaked = lastEpoch!.totalStaked.plus(event.params.amount);
-  let stakeInPreviousEpoch = false;
-  let epochStakes: string[] = [];
-
-  lastEpoch!.duration = blockTimestamp.minus(lastEpoch!.startTime);
-  lastEpoch!.save();
-
-  epochStakes = lastEpoch!.stakes;
-  for (let i = 0; i < epochStakes.length; i++) {
-    let epochStake = EpochStake.load(epochStakes[i]);
-    const epStId = crypto
-      .keccak256(
-        ByteArray.fromUTF8(
-          epochStake!.stakeData + epochCounter.count.toString()
-        )
-      )
-      .toHexString();
-    epochStake!.id = epStId;
-
-    // If this stake is the one to be topped up, increase the amount
-    if (epochStake!.stakeData == event.params.stakingProvider.toHexString()) {
-      stakeInPreviousEpoch = true;
-      epochStake!.amount = epochStake!.amount.plus(event.params.amount);
-    }
-
-    epochStake!.participation = epochStake!.amount.divDecimal(
-      totalStaked.toBigDecimal()
-    );
-    epochStake!.save();
-    epochStakes[i] = epochStake!.id;
+  const epochStakes = populateNewEpochStakes(lastEpoch.stakes);
+  const epochStakeId = getEpochStakeId(stakingProvider.toHexString());
+  let epochStake = EpochStake.load(epochStakeId);
+  if (!epochStake) {
+    epochStake = new EpochStake(epochStakeId);
+    epochStake.stakingProvider = stakingProvider;
+    epochStake.amount = BigInt.zero();
+    epochStakes.push(epochStake.id);
   }
+  epochStake.amount = epochStake.amount.plus(amount);
+  epochStake.save();
 
-  // If the topped-up-stake is not in the previous epoch, add it
-  if (!stakeInPreviousEpoch) {
-    const epStId = crypto
-      .keccak256(
-        ByteArray.fromUTF8(
-          event.params.stakingProvider.toHexString() +
-            epochCounter.count.toString()
-        )
-      )
-      .toHexString();
-    let newEpochStake = new EpochStake(epStId);
-    newEpochStake.stakeData = event.params.stakingProvider.toHexString();
-    newEpochStake.amount = event.params.amount;
-    newEpochStake.participation = newEpochStake.amount.divDecimal(
-      totalStaked.toBigDecimal()
-    );
-    newEpochStake.save();
-    epochStakes.push(newEpochStake.id);
-  }
-
-  let epoch = new Epoch(epochCounter.count.toString());
-  epoch.startTime = blockTimestamp;
-  epoch.totalStaked = totalStaked;
+  const epoch = new Epoch(getEpochCount().toString());
+  epoch.timestamp = timestamp;
+  epoch.totalAmount = lastEpoch.totalAmount.minus(amount);
   epoch.stakes = epochStakes;
   epoch.save();
 
-  epochCounter.count++;
-  epochCounter.save();
+  increaseEpochCount();
 }
 
 export function handleUnstaked(event: Unstaked): void {
@@ -329,7 +286,7 @@ export function handleOperatorConfirmed(event: OperatorConfirmed): void {
   }
   operator.stakingProvider = event.params.stakingProvider;
   operator.operator = event.params.operator;
-  //   operator.save()
+  operator.save();
 }
 
 export function handleMinStakeAmountChanged(
