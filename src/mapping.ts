@@ -67,7 +67,7 @@ export function handleStaked(event: Staked): void {
   lastEpoch.save();
 
   const epochStakes = populateNewEpochStakes(lastEpoch.stakes);
-  const epochStakeId = getEpochStakeId(stakingProvider.toHexString());
+  const epochStakeId = getEpochStakeId(stakingProvider);
   const epochStake = new EpochStake(epochStakeId);
   epochStake.stakingProvider = stakingProvider;
   epochStake.amount = stakeAmount;
@@ -137,7 +137,7 @@ export function handleToppedUp(event: ToppedUp): void {
   lastEpoch.save();
 
   const epochStakes = populateNewEpochStakes(lastEpoch.stakes);
-  const epochStakeId = getEpochStakeId(stakingProvider.toHexString());
+  const epochStakeId = getEpochStakeId(stakingProvider);
   let epochStake = EpochStake.load(epochStakeId);
   if (!epochStake) {
     epochStake = new EpochStake(epochStakeId);
@@ -221,7 +221,7 @@ export function handleUnstaked(event: Unstaked): void {
   lastEpoch.save();
 
   const epochStakes = populateNewEpochStakes(lastEpoch.stakes);
-  const epochStakeId = getEpochStakeId(stakingProvider.toHexString());
+  const epochStakeId = getEpochStakeId(stakingProvider);
   const epochStake = EpochStake.load(epochStakeId);
   epochStake!.amount = epochStake!.amount.minus(amount);
   epochStake!.save();
