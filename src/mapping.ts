@@ -13,7 +13,6 @@ import {
   StakeData,
   Epoch,
   EpochStake,
-  ConfirmedOperator,
   Account,
   MinStakeAmount,
 } from "../generated/schema";
@@ -275,17 +274,20 @@ export function handleDelegateVotesChanged(event: DelegateVotesChanged): void {
 }
 
 export function handleOperatorConfirmed(event: OperatorConfirmed): void {
-  let operator = ConfirmedOperator.load(
-    event.params.stakingProvider.toHexString()
-  );
-  if (!operator) {
-    operator = new ConfirmedOperator(
-      event.params.stakingProvider.toHexString()
-    );
+  const stakingProvider = event.params.stakingProvider;
+  const operator = event.params.operator;
+  const stakeData = StakeData.load(stakingProvider.toHexString());
+  if (stakeData) {
+    stakeData.operator = operator;
+    stakeData.save();
   }
-  operator.stakingProvider = event.params.stakingProvider;
-  operator.operator = event.params.operator;
-  operator.save();
+  const epochCount = getEpochCount() - 1;
+  const epochStakeId = getEpochStakeId(stakingProvider, epochCount);
+  const epochStake = EpochStake.load(epochStakeId);
+  if (epochStake) {
+    epochStake.operator = operator;
+    epochStake.save();
+  }
 }
 
 export function handleMinStakeAmountChanged(
