@@ -34,7 +34,7 @@ dataSources:
           handler: handleDelegateChanged
         - event: DelegateVotesChanged(indexed address,uint256,uint256)
           handler: handleDelegateVotesChanged
-      file: ./src/mapping.ts
+      file: ./src/staking.ts
   - kind: ethereum
     name: ThresholdToken
     network: mainnet
@@ -78,4 +78,4 @@ dataSources:
       eventHandlers:
         - event: OperatorConfirmed(indexed address,indexed address)
           handler: handleOperatorConfirmed
-      file: ./src/mapping.ts
+      file: ./src/pre-app.ts

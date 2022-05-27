@@ -1,5 +1,4 @@
 import { crypto, ByteArray, BigInt, log } from "@graphprotocol/graph-ts";
-import { OperatorConfirmed } from "../generated/SimplePREApplication/SimplePREApplication";
 import {
   Staked,
   ToppedUp,
@@ -271,23 +270,6 @@ export function handleDelegateVotesChanged(event: DelegateVotesChanged): void {
   );
   daoMetric.stakedTotal = daoMetric.stakedTotal.plus(difference);
   daoMetric.save();
-}
-
-export function handleOperatorConfirmed(event: OperatorConfirmed): void {
-  const stakingProvider = event.params.stakingProvider;
-  const operator = event.params.operator;
-  const stakeData = StakeData.load(stakingProvider.toHexString());
-  if (stakeData) {
-    stakeData.operator = operator;
-    stakeData.save();
-  }
-  const epochCount = getEpochCount() - 1;
-  const epochStakeId = getEpochStakeId(stakingProvider, epochCount);
-  const epochStake = EpochStake.load(epochStakeId);
-  if (epochStake) {
-    epochStake.operator = operator;
-    epochStake.save();
-  }
 }
 
 export function handleMinStakeAmountChanged(
