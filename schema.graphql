@@ -17,14 +17,12 @@ type StakeData @entity {
   nuInTStake: BigInt!
   totalStaked: BigInt!
   delegatee: StakeDelegation
-  operator: Bytes
 }
 
 type EpochStake @entity {
   # ID is the staking prov. add. + epoch counter
   id: ID!
   stakingProvider: Bytes!
-  operator: Bytes
   amount: BigInt!
 }
 
@@ -77,6 +75,13 @@ type TokenholderDelegation implements Delegation @entity {
   totalWeight: BigInt!
   liquidWeight: BigInt!
   delegators: [Account!] @derivedFrom(field: "delegatee")
+}
+
+type PREOperator @entity {
+  # ID is the staking provider address
+  id: ID!
+  operator: Bytes!
+  confirmationTimestamp: BigInt
 }
 
 type DAOMetric @entity {

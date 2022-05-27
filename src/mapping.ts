@@ -1,5 +1,8 @@
 import { crypto, ByteArray, BigInt, log } from "@graphprotocol/graph-ts";
-import { OperatorConfirmed } from "../generated/SimplePREApplication/SimplePREApplication";
+import {
+  OperatorBonded,
+  OperatorConfirmed,
+} from "../generated/SimplePREApplication/SimplePREApplication";
 import {
   Staked,
   ToppedUp,
@@ -15,6 +18,7 @@ import {
   EpochStake,
   Account,
   MinStakeAmount,
+  PREOperator,
 } from "../generated/schema";
 import {
   getDaoMetric,
@@ -273,21 +277,21 @@ export function handleDelegateVotesChanged(event: DelegateVotesChanged): void {
   daoMetric.save();
 }
 
+export function handleOperatorBonded(event: OperatorBonded): void {
+  const preOperator = new PREOperator(
+    event.params.stakingProvider.toHexString()
+  );
+  preOperator.operator = event.params.operator;
+  preOperator.save();
+}
+
 export function handleOperatorConfirmed(event: OperatorConfirmed): void {
-  const stakingProvider = event.params.stakingProvider;
-  const operator = event.params.operator;
-  const stakeData = StakeData.load(stakingProvider.toHexString());
-  if (stakeData) {
-    stakeData.operator = operator;
-    stakeData.save();
-  }
-  const epochCount = getEpochCount() - 1;
-  const epochStakeId = getEpochStakeId(stakingProvider, epochCount);
-  const epochStake = EpochStake.load(epochStakeId);
-  if (epochStake) {
-    epochStake.operator = operator;
-    epochStake.save();
-  }
+  const preOperator = new PREOperator(
+    event.params.stakingProvider.toHexString()
+  );
+  preOperator.operator = event.params.operator;
+  preOperator.confirmationTimestamp = event.block.timestamp;
+  preOperator.save();
 }
 
 export function handleMinStakeAmountChanged(
