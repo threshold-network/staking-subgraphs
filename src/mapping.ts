@@ -13,7 +13,6 @@ import {
   StakeData,
   Epoch,
   EpochStake,
-  ConfirmedOperator,
   Account,
   MinStakeAmount,
 } from "../generated/schema";
@@ -68,7 +67,7 @@ export function handleStaked(event: Staked): void {
   lastEpoch.save();
 
   const epochStakes = populateNewEpochStakes(lastEpoch.stakes);
-  const epochStakeId = getEpochStakeId(stakingProvider.toHexString());
+  const epochStakeId = getEpochStakeId(stakingProvider);
   const epochStake = new EpochStake(epochStakeId);
   epochStake.stakingProvider = stakingProvider;
   epochStake.amount = stakeAmount;
@@ -138,7 +137,7 @@ export function handleToppedUp(event: ToppedUp): void {
   lastEpoch.save();
 
   const epochStakes = populateNewEpochStakes(lastEpoch.stakes);
-  const epochStakeId = getEpochStakeId(stakingProvider.toHexString());
+  const epochStakeId = getEpochStakeId(stakingProvider);
   let epochStake = EpochStake.load(epochStakeId);
   if (!epochStake) {
     epochStake = new EpochStake(epochStakeId);
@@ -222,7 +221,7 @@ export function handleUnstaked(event: Unstaked): void {
   lastEpoch.save();
 
   const epochStakes = populateNewEpochStakes(lastEpoch.stakes);
-  const epochStakeId = getEpochStakeId(stakingProvider.toHexString());
+  const epochStakeId = getEpochStakeId(stakingProvider);
   const epochStake = EpochStake.load(epochStakeId);
   epochStake!.amount = epochStake!.amount.minus(amount);
   epochStake!.save();
@@ -275,17 +274,20 @@ export function handleDelegateVotesChanged(event: DelegateVotesChanged): void {
 }
 
 export function handleOperatorConfirmed(event: OperatorConfirmed): void {
-  let operator = ConfirmedOperator.load(
-    event.params.stakingProvider.toHexString()
-  );
-  if (!operator) {
-    operator = new ConfirmedOperator(
-      event.params.stakingProvider.toHexString()
-    );
+  const stakingProvider = event.params.stakingProvider;
+  const operator = event.params.operator;
+  const stakeData = StakeData.load(stakingProvider.toHexString());
+  if (stakeData) {
+    stakeData.operator = operator;
+    stakeData.save();
   }
-  operator.stakingProvider = event.params.stakingProvider;
-  operator.operator = event.params.operator;
-  operator.save();
+  const epochCount = getEpochCount() - 1;
+  const epochStakeId = getEpochStakeId(stakingProvider, epochCount);
+  const epochStake = EpochStake.load(epochStakeId);
+  if (epochStake) {
+    epochStake.operator = operator;
+    epochStake.save();
+  }
 }
 
 export function handleMinStakeAmountChanged(
