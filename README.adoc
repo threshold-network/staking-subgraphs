@@ -1,12 +1,31 @@
 :toc: macro
 
-= Threshold network subgraphs
+= Threshold Network subgraph
 
-This repository contains Threshold network subgraphs.
+This repository contains Threshold Network subgraph.
 
-The subgraphs are open APIs to query data from networks like Ethereum and IPFS. The data is indexed by https://thegraph.com[*The Graph*] decentralized protocol.
+Subgraphs are open APIs to query data from networks like Ethereum and IPFS. The data is indexed by
+https://thegraph.com[*The Graph*] decentralized protocol.
 
 toc::[]
+
+== GraphQL relevant entities
+
+- `Account`: represents the base user data: user stakes and delegations.
+
+- `StakeData`: information about each stake.
+
+- `Epoch`: each staking event (i.e staked, toppedup and unstaked) creates a new epoch, so the
+duration of these is variable. It contains a list of the stakes at that time (EpochStakes).
+
+- `EpochStake`: information about the tokens amount staked in each epoch.
+
+- `MinStakeAmount`: minimum amount of tokens allowed to stake.
+
+- `PREOperator`: PRE application stake's operator address and timestamp of operator confirmation. If
+timestamp is null, the operator has been bonded but not confirmed.
+
+- `DAOMetric`: metrics about the amount of liquid and staked tokens in DAO.
 
 == Install, build and deploy subgraph
 
@@ -14,160 +33,72 @@ toc::[]
 
 Please make sure you have the following prerequisites installed on your machine:
 
-- https://nodejs.org[Node.js] >14.17.4
-- https://yarnpkg.com[Yarn] >1.22.10
+- https://nodejs.org[Node.js] >14.17.4 - https://yarnpkg.com[Yarn] >1.22.10
 
 === Installation
 
 The Graph CLI can be installed in your computer with npm or yarn:
-```
-# NPM
-npm install -g @graphprotocol/graph-cli
 
-# Yarn
-yarn global add @graphprotocol/graph-cli
+```
+# NPM npm install -g @graphprotocol/graph-cli
+
+# Yarn yarn global add @graphprotocol/graph-cli
 ```
 
 Once graph-cli is installed in your system, install this subgraph node package:
+
 ```
 yarn install
 ```
 
 === Build the subgraph
+
 ```
 graph codegen && graph build
 ```
 
 === Deploy subgraph
 
-Compiled subgraphs can be deployed in Subgraph Studio. For this it is necessary to create a new subgraph in https://thegraph.com/studio/[*Subgraph Studio*] and get a `deploy key`.
+Compiled subgraphs can be deployed in Subgraph Studio. For this it is necessary to create a new
+subgraph in https://thegraph.com/studio/[*Subgraph Studio*] and get a `deploy key`.
 
 Once the new subgraph is created in Subgraph Studio, you have to authenticate in graph-cli:
+
 ```
 graph auth  --studio <DEPLOY KEY>
 ```
 
 And then you can deploy the subgraph. Follow the CLI instructions:
+
 ```
 graph deploy --studio
-```
-
-== GraphQL relevant fields
-
-- `Epoch`: each staking event (i.e stake, top up and unstake) creates a new epoch, so the duration of these is variable. It contains a list of the stakes at that time.
-
-- `StakeData`: information about each stake ever made.
-
-- `EpochStake`: information about the token amount staked in each epoch.
-
-- `Delegation`: delegator and delegate address of each delegation accomplished.
-
-- `ConfirmedOperator`: staking provider and operator address of each operator confirmation ever made.
-
-== GraphQL query examples
-Current temporary query URL:
-
-https://api.studio.thegraph.com/query/24143/threshold/0.0.3
-
-=== Check current stakes
-```
-{
-  epoches(orderBy: startTime, orderDirection: desc, first: 1) {
-    totalStaked
-    stakes {
-      amount
-      participation
-      stakeData {
-        stakingProvider
-        owner
-        stakeType
-        authorizer
-        beneficiary
-      }
-    }
-  }
-}
-```
-
-=== Get stakes between two dates
-```
-{
-  epoches(
-    orderBy: startTime
-    orderDirection: asc
-    where: {startTime_gte: "<START_TIMESTAMP", startTime_lte: "END_TIMESTAMP"}
-  ) {
-    totalStaked
-    stakes {
-      amount
-      participation
-      stakeData {
-        stakingProvider
-        owner
-        stakeType
-        authorizer
-        beneficiary
-      }
-    }
-    startTime
-    duration
-  }
-}
-```
-
-=== Get stakes of a specific epoch
-```
-{
-  epoches(
-    orderBy: startTime
-    orderDirection: desc
-    first: 1
-    where: {startTime_lte: "<TIMESTAMP"}
-  ) {
-    totalStaked
-    stakes {
-      amount
-      participation
-      stakeData {
-        stakingProvider
-        owner
-        stakeType
-        authorizer
-        beneficiary
-      }
-    }
-  }
-}
 ```
 
 == Test the subgraph locally
 
 === Run local chain eg. Ganache
 
-Note that host set to `0.0.0.0` is necessary for Ganache to be accessible from
-within Docker and from other machines. By default, Ganache only binds to
-127.0.0.1, which can only be accessed from the host machine that Ganache runs
-on. If you use a ganache-cli run the node with `ganache-cli -h 0.0.0.0`. If you
-use a Ganche in GUI version go to `settings -> server` and set `HOSTNAME` to
-`0.0.0.0 - All Interfaces`. Make sure the network ID is the same as chaind ID.
-By default, ganache sets the chaind ID to `1337`. To change the network ID in
-Ganache GUI go to `settings -> server` and set `NETWORK ID` to `1337`. If you
-use a ganache-cli run a node with flag `-i 1337`.
+Note that host set to `0.0.0.0` is necessary for Ganache to be accessible from within Docker and
+from other machines. By default, Ganache only binds to 127.0.0.1, which can only be accessed from
+the host machine that Ganache runs on. If you use a ganache-cli run the node with `ganache-cli -h
+0.0.0.0`. If you use a Ganche in GUI version go to `settings -> server` and set `HOSTNAME` to
+`0.0.0.0 - All Interfaces`. Make sure the network ID is the same as chaind ID. By default, ganache
+sets the chaind ID to `1337`. To change the network ID in Ganache GUI go to `settings -> server` and
+set `NETWORK ID` to `1337`. If you use a ganache-cli run a node with flag `-i 1337`.
 
 === Deploy the Threshold Network contracts to local chain
 
-Clone https://github.com/threshold-network/solidity-contracts repo and make sure
-the `development` network config in
+Clone https://github.com/threshold-network/solidity-contracts repo and make sure the `development`
+network config in
 https://github.com/threshold-network/solidity-contracts/blob/main/hardhat.config.ts#L42-L44[hardhat.config.ts]
 is correct for your local chain.
 
-NOTE: The deployment scripts assume the `keep-core` contract are already
-deployed to your local chain.
+NOTE: The deployment scripts assume the `keep-core` contract are already deployed to your local
+chain.
 
 ==== Deploy the Keep Core contracts to local chain
 
-Clone https://github.com/keep-network/keep-core repo and make sure the
-`local` network config in
+Clone https://github.com/keep-network/keep-core repo and make sure the `local` network config in
 https://github.com/keep-network/keep-core/blob/main/solidity-v1/truffle-config.js#L8-L12[truffle-config.js]
 is correct for your local chain.
 
@@ -179,18 +110,15 @@ Go to `./solidity-v1` and run `yarn link`.
 
 Install dependencies `yarn`.
 
-Link the local `keep-core` contracts by running `yarn link
-@keep-network/keep-core`.
+Link the local `keep-core` contracts by running `yarn link @keep-network/keep-core`.
 
 Run `./scripts/prepare-dependencies.sh`.
 
-Run `yarn deploy --network development --reset` to deploy contracts to your
-local chain.
+Run `yarn deploy --network development --reset` to deploy contracts to your local chain.
 
 === Update the subgraph manifest
 
-Set the correct `address` and `startBlock` for contracts in `subgraph.yaml`
-file.
+Set the correct `address` and `startBlock` for contracts in `subgraph.yaml` file.
 
 === Run a local Graph Node
 
