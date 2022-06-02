@@ -1,0 +1,17 @@
+repos:
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: "v2.6.2"
+    hooks:
+      - id: prettier
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: "v8.16.0"
+    hooks:
+      - id: eslint
+        files: \.[jt]sx?$ # *.js, *.jsx, *.ts and *.tsx
+        types: [file]
+        additional_dependencies:
+          - "eslint@8.16.0"
+          - "eslint-config-prettier@8.5.0"
+          - "prettier@2.6.2"
+          - "@typescript-eslint/eslint-plugin@5.27.0"
+          - "@typescript-eslint/parser@5.27.0"

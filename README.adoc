@@ -52,6 +52,25 @@ And then you can deploy the subgraph. Follow the CLI instructions:
 graph deploy --studio
 ```
 
+=== Contributing
+
+==== Lint
+
+We use https://prettier.io[Prettier] and https:eslint.org[ESLint] for linting code. To run:
+```
+yarn format           # Prettier
+yarn format:fix
+yarn lint # eslint    # ESLint
+yarn lint:fix
+yarn format:lint:fix  # fix files using Prettier and ESLint
+```
+
+We encourage to use Git hooks to check code style. To install Git hooks, run:
+```
+yarn husky install
+```
+
+
 == GraphQL relevant fields
 
 - `Epoch`: each staking event (i.e stake, top up and unstake) creates a new epoch, so the duration of these is variable. It contains a list of the stakes at that time.

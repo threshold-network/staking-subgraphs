@@ -2,6 +2,10 @@
   "name": "threshold-subgraph",
   "license": "GPL-3.0-or-later",
   "scripts": {
+    "lint": "eslint . --ignore-path .gitignore",
+    "lint:fix": "eslint . --ignore-path .gitignore --fix",
+    "format": "prettier . --check --ignore-path .gitignore && yarn lint",
+    "format:fix": "prettier . --write --ignore-path .gitignore && yarn lint:fix",
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ Threshold",
@@ -12,5 +16,13 @@
   "dependencies": {
     "@graphprotocol/graph-cli": "0.29.0",
     "@graphprotocol/graph-ts": "0.26.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "5.27.0",
+    "@typescript-eslint/parser": "5.27.0",
+    "eslint": "8.16.0",
+    "eslint-config-prettier": "8.5.0",
+    "prettier": "2.6.2",
+    "typescript": "4.7.2"
   }
 }
