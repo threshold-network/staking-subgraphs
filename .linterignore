@@ -1,0 +1,19 @@
+# Local
+.DS_Store
+.idea
+.eslintcache
+
+# IDEs
+.vscode/
+.idea/
+
+# Generated
+generated/
+build/
+data
+
+# Yarn
+node_modules/
+yarn-error.log
+.cache/
+yarn.lock
