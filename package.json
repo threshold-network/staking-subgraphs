@@ -16,7 +16,10 @@
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 Threshold"
   },
   "lint-staged": {
-    "**/*.{js,jsx,ts,tsx}": ["yarn lint", "yarn format"]
+    "**/*.{js,jsx,ts,tsx}": [
+      "yarn lint",
+      "yarn format"
+    ]
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.29.0",
