@@ -2,9 +2,9 @@
   "name": "threshold-subgraph",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "lint": "eslint . --ignore-path .linterignore",
+    "lint": "eslint --ignore-path .linterignore",
     "lint:fix": "yarn lint --fix",
-    "prettier": "prettier . --ignore-path .linterignore",
+    "prettier": "prettier --ignore-path .linterignore",
     "format": "yarn prettier --check",
     "format:fix": "yarn prettier --write",
     "lint:format:fix": "yarn format:fix && yarn lint:fix",
@@ -14,6 +14,9 @@
     "create-local": "graph create --node http://localhost:8020/ Threshold",
     "remove-local": "graph remove --node http://localhost:8020/ Threshold",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 Threshold"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": ["yarn lint", "yarn format"]
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.29.0",
@@ -25,6 +28,8 @@
     "eslint": "8.16.0",
     "eslint-config-prettier": "8.5.0",
     "husky": "^8.0.1",
+    "lint-staged": "^13.0.0",
+    "mrm": "2",
     "prettier": "2.6.2",
     "typescript": "4.7.2"
   }

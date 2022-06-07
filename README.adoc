@@ -58,11 +58,11 @@ graph deploy --studio
 
 We use https://prettier.io[Prettier] and https:eslint.org[ESLint] for linting code. To run:
 ```
-yarn format           # Prettier
-yarn format:fix
-yarn lint # eslint    # ESLint
-yarn lint:fix
-yarn format:lint:fix  # fix files using Prettier and ESLint
+yarn format <file_path>           # Prettier
+yarn format:fix <file_path>
+yarn lint # eslint <file_path>    # ESLint
+yarn lint:fix <file_path>
+yarn format:lint:fix <file_path>  # fix files using Prettier and ESLint
 ```
 
 We encourage to use Git hooks to check code style. To install Git hooks, run:
