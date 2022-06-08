@@ -35,17 +35,17 @@ type Epoch @entity {
   stakes: [EpochStake!]!
 }
 
+type EpochCounter @entity {
+  # Singleton entity, id = epoch-counter
+  id: ID!
+  count: Int!
+}
+
 type MinStakeAmount @entity {
   id: ID!
   amount: BigInt!
   updatedAt: BigInt!
   blockNumber: BigInt!
-}
-
-type EpochCounter @entity {
-  # Singleton entity, id = epoch-counter
-  id: ID!
-  count: Int!
 }
 
 interface Delegation {
