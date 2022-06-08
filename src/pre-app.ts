@@ -1,8 +1,9 @@
+import { store, Address } from "@graphprotocol/graph-ts"
 import {
   OperatorBonded,
   OperatorConfirmed,
 } from "../generated/SimplePREApplication/SimplePREApplication"
-import { PREOperator } from "../generated/schema"
+import { getOrCreatePreApplication } from "./utils"
 
 export function handleOperatorBonded(event: OperatorBonded): void {
   const stakingProvider = event.params.stakingProvider
@@ -15,7 +16,7 @@ export function handleOperatorBonded(event: OperatorBonded): void {
   } else {
     preApplication.operator = operator
     preApplication.stake = stakingProvider.toHexString()
-    preApplication.bondedTimestamp = timestamp.plus(BigInt.fromString("12"))
+    preApplication.bondedTimestamp = timestamp
     preApplication.save()
   }
 }
@@ -30,4 +31,3 @@ export function handleOperatorConfirmed(event: OperatorConfirmed): void {
   preApplication.confirmedTimestamp = timestamp
   preApplication.save()
 }
-

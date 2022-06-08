@@ -1,5 +1,4 @@
 import {
-  store,
   crypto,
   ByteArray,
   BigInt,
@@ -31,7 +30,6 @@ import {
   increaseEpochCount,
   getOrCreateStakeDelegation,
   getOrCreateTokenholderDelegation,
-  getOrCreatePreApplication,
 } from "./utils"
 
 export function handleStaked(event: Staked): void {
