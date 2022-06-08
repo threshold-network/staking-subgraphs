@@ -14,7 +14,6 @@ import {
   EpochStake,
   Account,
   MinStakeAmount,
-  PREOperator,
 } from "../generated/schema"
 import {
   getDaoMetric,
@@ -223,10 +222,12 @@ export function handleUnstaked(event: Unstaked): void {
   const epochStakes = populateNewEpochStakes(lastEpoch.stakes)
   const epochStakeId = getEpochStakeId(stakingProvider)
   const epochStake = EpochStake.load(epochStakeId)
-  epochStake!.amount = epochStake!.amount.minus(amount)
-  epochStake!.save()
-  if (epochStake!.amount.isZero()) {
-    epochStakes.splice(epochStakes.indexOf(epochStakeId), 1)
+  if (epochStake) {
+    epochStake.amount = epochStake.amount.minus(amount)
+    epochStake.save()
+    if (epochStake.amount.isZero()) {
+      epochStakes.splice(epochStakes.indexOf(epochStakeId), 1)
+    }
   }
 
   const epoch = new Epoch(getEpochCount().toString())
