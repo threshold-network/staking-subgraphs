@@ -7,7 +7,7 @@
     "prettier": "prettier --ignore-path .linterignore",
     "format": "yarn prettier --check",
     "format:fix": "yarn prettier --write",
-    "lint:format:fix": "yarn format:fix && yarn lint:fix",
+    "lint:format:fix": "yarn format:fix . && yarn lint:fix .",
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ Threshold",
