@@ -7,6 +7,7 @@
     "prettier": "prettier --ignore-path .linterignore",
     "format": "yarn prettier --check",
     "format:fix": "yarn prettier --write",
+    "lint:format": "yarn format . && yarn lint .",
     "lint:format:fix": "yarn format:fix . && yarn lint:fix .",
     "codegen": "graph codegen",
     "build": "graph build",
