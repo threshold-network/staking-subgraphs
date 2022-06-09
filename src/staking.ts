@@ -28,7 +28,7 @@ import {
 
 export function handleStaked(event: Staked): void {
   const stakingProvider = event.params.stakingProvider
-  const stakeAmount = event.params.amount
+  const amount = event.params.amount
 
   const stakeData = new StakeData(stakingProvider.toHexString())
   let type: string
@@ -52,9 +52,9 @@ export function handleStaked(event: Staked): void {
   stakeData.owner = account.id
   stakeData.beneficiary = event.params.beneficiary
   stakeData.authorizer = event.params.authorizer
-  stakeData.tStake = type === "T" ? stakeAmount : BigInt.zero()
-  stakeData.keepInTStake = type === "KEEP" ? stakeAmount : BigInt.zero()
-  stakeData.nuInTStake = type === "NU" ? stakeAmount : BigInt.zero()
+  stakeData.tStake = type === "T" ? amount : BigInt.zero()
+  stakeData.keepInTStake = type === "KEEP" ? amount : BigInt.zero()
+  stakeData.nuInTStake = type === "NU" ? amount : BigInt.zero()
   stakeData.totalStaked = stakeData.tStake
     .plus(stakeData.keepInTStake)
     .plus(stakeData.nuInTStake)
@@ -69,13 +69,13 @@ export function handleStaked(event: Staked): void {
   const epochStakeId = getEpochStakeId(stakingProvider)
   const epochStake = new EpochStake(epochStakeId)
   epochStake.stakingProvider = stakingProvider
-  epochStake.amount = stakeAmount
+  epochStake.amount = amount
   epochStake.save()
   epochStakes.push(epochStake.id)
 
   const epoch = new Epoch(getEpochCount().toString())
   epoch.timestamp = timestamp
-  epoch.totalAmount = lastEpoch.totalAmount.plus(stakeAmount)
+  epoch.totalAmount = lastEpoch.totalAmount.plus(amount)
   epoch.stakes = epochStakes
   epoch.save()
 
@@ -149,7 +149,7 @@ export function handleToppedUp(event: ToppedUp): void {
 
   const epoch = new Epoch(getEpochCount().toString())
   epoch.timestamp = timestamp
-  epoch.totalAmount = lastEpoch.totalAmount.minus(amount)
+  epoch.totalAmount = lastEpoch.totalAmount.plus(amount)
   epoch.stakes = epochStakes
   epoch.save()
 
