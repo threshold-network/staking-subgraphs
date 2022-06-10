@@ -1,4 +1,10 @@
-import { crypto, ByteArray, BigInt, log } from "@graphprotocol/graph-ts"
+import {
+  crypto,
+  ByteArray,
+  BigInt,
+  log,
+  Address,
+} from "@graphprotocol/graph-ts"
 import { OperatorConfirmed } from "../generated/SimplePREApplication/SimplePREApplication"
 import {
   Staked,
@@ -72,6 +78,7 @@ export function handleStaked(event: Staked): void {
   const epochStakeId = getEpochStakeId(stakingProvider.toHexString())
   const epochStake = new EpochStake(epochStakeId)
   epochStake.stakingProvider = stakingProvider
+  epochStake.owner = owner
   epochStake.amount = stakeAmount
   epochStake.save()
   epochStakes.push(epochStake.id)
@@ -144,6 +151,7 @@ export function handleToppedUp(event: ToppedUp): void {
   if (!epochStake) {
     epochStake = new EpochStake(epochStakeId)
     epochStake.stakingProvider = stakingProvider
+    epochStake.owner = Address.fromHexString(stakeData.owner)
     epochStake.amount = BigInt.zero()
     epochStakes.push(epochStake.id)
   }

@@ -30,6 +30,7 @@ type EpochStake @entity {
   # ID is the staking prov. add. + epoch counter
   id: ID!
   stakingProvider: Bytes! # address
+  owner: Bytes!
   amount: BigInt!
 }
 
