@@ -1,9 +1,3 @@
-enum StakeType {
-  NU
-  KEEP
-  T
-}
-
 type Account @entity {
   # Id is the ethereum address of the account.
   id: ID!
@@ -16,7 +10,6 @@ type StakeData @entity {
   # ID is the staking provider address
   id: ID!
   owner: Account!
-  stakeType: StakeType!
   beneficiary: Bytes!
   authorizer: Bytes!
   tStake: BigInt!
