@@ -78,11 +78,13 @@ type TokenholderDelegation implements Delegation @entity {
   delegators: [Account!] @derivedFrom(field: "delegatee")
 }
 
-type PREOperator @entity {
+type SimplePREApplication @entity {
   # ID is the staking provider address
   id: ID!
   operator: Bytes!
-  confirmationTimestamp: BigInt
+  stake: StakeData!
+  bondedTimestamp: BigInt!
+  confirmedTimestamp: BigInt
 }
 
 type DAOMetric @entity {

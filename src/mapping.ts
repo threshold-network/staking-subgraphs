@@ -1,4 +1,5 @@
 import {
+  store,
   crypto,
   ByteArray,
   BigInt,
@@ -24,7 +25,6 @@ import {
   EpochStake,
   Account,
   MinStakeAmount,
-  PREOperator,
 } from "../generated/schema"
 import {
   getDaoMetric,
@@ -35,6 +35,7 @@ import {
   increaseEpochCount,
   getOrCreateStakeDelegation,
   getOrCreateTokenholderDelegation,
+  getOrCreatePreApplication,
 } from "./utils"
 
 export function handleStaked(event: Staked): void {
@@ -286,20 +287,30 @@ export function handleDelegateVotesChanged(event: DelegateVotesChanged): void {
 }
 
 export function handleOperatorBonded(event: OperatorBonded): void {
-  const preOperator = new PREOperator(
-    event.params.stakingProvider.toHexString()
-  )
-  preOperator.operator = event.params.operator
-  preOperator.save()
+  const stakingProvider = event.params.stakingProvider
+  const operator = event.params.operator
+  const timestamp = event.params.startTimestamp
+
+  const preApplication = getOrCreatePreApplication(stakingProvider)
+  if (operator === Address.zero()) {
+    store.remove("SimplePREApplication", stakingProvider.toHexString())
+  } else {
+    preApplication.operator = operator
+    preApplication.stake = stakingProvider.toHexString()
+    preApplication.bondedTimestamp = timestamp.plus(BigInt.fromString("12"))
+    preApplication.save()
+  }
 }
 
 export function handleOperatorConfirmed(event: OperatorConfirmed): void {
-  const preOperator = new PREOperator(
-    event.params.stakingProvider.toHexString()
-  )
-  preOperator.operator = event.params.operator
-  preOperator.confirmationTimestamp = event.block.timestamp
-  preOperator.save()
+  const stakingProvider = event.params.stakingProvider
+  const operator = event.params.operator
+  const timestamp = event.block.timestamp
+
+  const preApplication = getOrCreatePreApplication(stakingProvider)
+  preApplication.operator = operator
+  preApplication.confirmedTimestamp = timestamp
+  preApplication.save()
 }
 
 export function handleMinStakeAmountChanged(
