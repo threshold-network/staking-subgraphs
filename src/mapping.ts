@@ -1,11 +1,15 @@
 import {
+  store,
   crypto,
   ByteArray,
   BigInt,
   log,
   Address,
 } from "@graphprotocol/graph-ts"
-import { OperatorConfirmed } from "../generated/SimplePREApplication/SimplePREApplication"
+import {
+  OperatorBonded,
+  OperatorConfirmed,
+} from "../generated/SimplePREApplication/SimplePREApplication"
 import {
   Staked,
   ToppedUp,
@@ -19,7 +23,6 @@ import {
   StakeData,
   Epoch,
   EpochStake,
-  ConfirmedOperator,
   Account,
   MinStakeAmount,
 } from "../generated/schema"
@@ -32,6 +35,7 @@ import {
   increaseEpochCount,
   getOrCreateStakeDelegation,
   getOrCreateTokenholderDelegation,
+  getOrCreatePreApplication,
 } from "./utils"
 
 export function handleStaked(event: Staked): void {
@@ -64,8 +68,10 @@ export function handleStaked(event: Staked): void {
   stakeData.keepInTStake = type === "KEEP" ? amount : BigInt.zero()
   stakeData.nuInTStake = type === "NU" ? amount : BigInt.zero()
   stakeData.totalStaked = stakeData.tStake
-    .plus(stakeData.keepInTStake)
-    .plus(stakeData.nuInTStake)
+  stakeData.nuInTStake =
+    type === "NU"
+      ? amount
+      : BigInt.zero().plus(stakeData.keepInTStake).plus(stakeData.nuInTStake)
   stakeData.save()
 
   const lastEpoch = getOrCreateLastEpoch()
@@ -74,7 +80,7 @@ export function handleStaked(event: Staked): void {
   lastEpoch.save()
 
   const epochStakes = populateNewEpochStakes(lastEpoch.stakes)
-  const epochStakeId = getEpochStakeId(stakingProvider.toHexString())
+  const epochStakeId = getEpochStakeId(stakingProvider)
   const epochStake = new EpochStake(epochStakeId)
   epochStake.stakingProvider = stakingProvider
   epochStake.owner = owner
@@ -145,7 +151,7 @@ export function handleToppedUp(event: ToppedUp): void {
   lastEpoch.save()
 
   const epochStakes = populateNewEpochStakes(lastEpoch.stakes)
-  const epochStakeId = getEpochStakeId(stakingProvider.toHexString())
+  const epochStakeId = getEpochStakeId(stakingProvider)
   let epochStake = EpochStake.load(epochStakeId)
   if (!epochStake) {
     epochStake = new EpochStake(epochStakeId)
@@ -230,7 +236,7 @@ export function handleUnstaked(event: Unstaked): void {
   lastEpoch.save()
 
   const epochStakes = populateNewEpochStakes(lastEpoch.stakes)
-  const epochStakeId = getEpochStakeId(stakingProvider.toHexString())
+  const epochStakeId = getEpochStakeId(stakingProvider)
   const epochStake = EpochStake.load(epochStakeId)
   epochStake!.amount = epochStake!.amount.minus(amount)
   epochStake!.save()
@@ -280,16 +286,31 @@ export function handleDelegateVotesChanged(event: DelegateVotesChanged): void {
   daoMetric.save()
 }
 
-export function handleOperatorConfirmed(event: OperatorConfirmed): void {
-  let operator = ConfirmedOperator.load(
-    event.params.stakingProvider.toHexString()
-  )
-  if (!operator) {
-    operator = new ConfirmedOperator(event.params.stakingProvider.toHexString())
+export function handleOperatorBonded(event: OperatorBonded): void {
+  const stakingProvider = event.params.stakingProvider
+  const operator = event.params.operator
+  const timestamp = event.params.startTimestamp
+
+  const preApplication = getOrCreatePreApplication(stakingProvider)
+  if (operator === Address.zero()) {
+    store.remove("SimplePREApplication", stakingProvider.toHexString())
+  } else {
+    preApplication.operator = operator
+    preApplication.stake = stakingProvider.toHexString()
+    preApplication.bondedTimestamp = timestamp.plus(BigInt.fromString("12"))
+    preApplication.save()
   }
-  operator.stakingProvider = event.params.stakingProvider
-  operator.operator = event.params.operator
-  operator.save()
+}
+
+export function handleOperatorConfirmed(event: OperatorConfirmed): void {
+  const stakingProvider = event.params.stakingProvider
+  const operator = event.params.operator
+  const timestamp = event.block.timestamp
+
+  const preApplication = getOrCreatePreApplication(stakingProvider)
+  preApplication.operator = operator
+  preApplication.confirmedTimestamp = timestamp
+  preApplication.save()
 }
 
 export function handleMinStakeAmountChanged(
