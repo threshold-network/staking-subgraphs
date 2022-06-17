@@ -30,10 +30,12 @@ export function getOrCreateLastEpoch(): Epoch {
 export function populateNewEpochStakes(stakes: string[]): string[] {
   for (let i = 0; i < stakes.length; i++) {
     const epochStake = EpochStake.load(stakes[i])
-    const stakingProvider = Address.fromBytes(epochStake!.stakingProvider)
-    epochStake!.id = getEpochStakeId(stakingProvider)
-    epochStake!.save()
-    stakes[i] = epochStake!.id
+    if (epochStake) {
+      const stakingProvider = Address.fromBytes(epochStake.stakingProvider)
+      epochStake.id = getEpochStakeId(stakingProvider)
+      epochStake.save()
+      stakes[i] = epochStake.id
+    }
   }
 
   return stakes
