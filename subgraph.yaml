@@ -14,10 +14,12 @@ dataSources:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Staked
-        - ToppedUp
-        - Unstaked
-        - DelegateChanged
+        - Account
+        - StakeData
+        - EpochStake
+        - Epoch
+        - EpochCounter
+        - MinStakeAmount
       abis:
         - name: TokenStaking
           file: ./abis/TokenStaking.json
@@ -34,7 +36,7 @@ dataSources:
           handler: handleDelegateChanged
         - event: DelegateVotesChanged(indexed address,uint256,uint256)
           handler: handleDelegateVotesChanged
-      file: ./src/mapping.ts
+      file: ./src/staking.ts
   - kind: ethereum
     name: ThresholdToken
     network: mainnet
@@ -80,4 +82,4 @@ dataSources:
           handler: handleOperatorConfirmed
         - event: OperatorBonded(indexed address,indexed address,uint256)
           handler: handleOperatorBonded
-      file: ./src/mapping.ts
+      file: ./src/pre-app.ts
