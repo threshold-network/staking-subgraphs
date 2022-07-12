@@ -1,12 +1,37 @@
 :toc: macro
 
-= Threshold network subgraphs
+= Threshold Network subgraph
 
-This repository contains Threshold network subgraphs.
+This repository contains Threshold Network subgraph.
 
-The subgraphs are open APIs to query data from networks like Ethereum and IPFS. The data is indexed by https://thegraph.com[*The Graph*] decentralized protocol.
+Subgraphs are open APIs to query data from networks like Ethereum and IPFS. The
+data is indexed by https://thegraph.com[*The Graph*] decentralized protocol.
 
 toc::[]
+
+NOTE: Development query URL:
+https://api.studio.thegraph.com/query/24143/main-threshold-subgraph/0.0.6
+
+== GraphQL relevant entities
+
+- `Account`: represents the base user data: user's stakes and delegations.
+
+- `StakeData`: information (owner, delegates, token amount...) about each stake.
+
+- `Epoch`: each staking event (i.e staked, toppedup and unstaked) creates a new
+epoch, so the duration of these is variable. It contains a list of the stakes at
+that time (EpochStakes).
+
+- `EpochStake`: information about the token amounts staked in each epoch.
+
+- `MinStakeAmount`: minimum amount of tokens allowed to stake in Threshold
+Network.
+
+- `PREOperator`: PRE application stake operator's address and timestamp of
+operator confirmation. If timestamp is null, the operator has been bonded but
+not confirmed.
+
+- `DAOMetric`: metrics about the amount of liquid and staked tokens in DAO.
 
 == Install, build and deploy subgraph
 
@@ -14,149 +39,66 @@ toc::[]
 
 Please make sure you have the following prerequisites installed on your machine:
 
-- https://nodejs.org[Node.js] >14.17.4
-- https://yarnpkg.com[Yarn] >1.22.10
+- https://nodejs.org[Node.js] >14.17.4 - https://yarnpkg.com[Yarn] >1.22.10
 
 === Installation
 
 The Graph CLI can be installed in your computer with npm or yarn:
-```
-# NPM
-npm install -g @graphprotocol/graph-cli
 
-# Yarn
-yarn global add @graphprotocol/graph-cli
+```
+$ yarn global add @graphprotocol/graph-cli
 ```
 
 Once graph-cli is installed in your system, install this subgraph node package:
+
 ```
-yarn install
+$ yarn install
 ```
 
 === Build the subgraph
+
 ```
-graph codegen && graph build
+$ graph codegen && graph build
 ```
 
 === Deploy subgraph
 
-Compiled subgraphs can be deployed in Subgraph Studio. For this it is necessary to create a new subgraph in https://thegraph.com/studio/[*Subgraph Studio*] and get a `deploy key`.
+Subgraphs can be deployed in Subgraph Studio. It is required to create a new
+subgraph in https://thegraph.com/studio/[*Subgraph Studio*] and get a `deploy
+key`.
 
-Once the new subgraph is created in Subgraph Studio, you have to authenticate in graph-cli:
+Once the new subgraph is created in Subgraph Studio, you have to authenticate in
+graph-cli:
+
 ```
-graph auth  --studio <DEPLOY KEY>
+$ graph auth  --studio <DEPLOY KEY>
 ```
 
 And then you can deploy the subgraph. Follow the CLI instructions:
+
 ```
-graph deploy --studio
+$ graph deploy --studio
 ```
 
 === Contributing
 
 ==== Lint
 
-We use https://prettier.io[Prettier] and https:eslint.org[ESLint] for linting code. To run:
+We use https://prettier.io[Prettier] and https://eslint.org[ESLint] for linting
+code. The scripts are:
+
 ```
-yarn format <file_path>           # Prettier
-yarn format:fix <file_path>
-yarn lint # eslint <file_path>    # ESLint
-yarn lint:fix <file_path>
-yarn format:lint:fix <file_path>  # fix files using Prettier and ESLint
+$ yarn format <file_path>           # Prettier
+$ yarn format:fix <file_path>
+$ yarn lint # eslint <file_path>    # ESLint
+$ yarn lint:fix <file_path>
+$ yarn format:lint:fix <file_path>  # fix files using Prettier and ESLint
 ```
 
 We encourage to use Git hooks to check code style. To install Git hooks, run:
+
 ```
-yarn husky install
-```
-
-
-== GraphQL relevant fields
-
-- `Epoch`: each staking event (i.e stake, top up and unstake) creates a new epoch, so the duration of these is variable. It contains a list of the stakes at that time.
-
-- `StakeData`: information about each stake ever made.
-
-- `EpochStake`: information about the token amount staked in each epoch.
-
-- `Delegation`: delegator and delegate address of each delegation accomplished.
-
-- `ConfirmedOperator`: staking provider and operator address of each operator confirmation ever made.
-
-== GraphQL query examples
-Current temporary query URL:
-
-https://api.studio.thegraph.com/query/24143/threshold/0.0.3
-
-=== Check current stakes
-```
-{
-  epoches(orderBy: startTime, orderDirection: desc, first: 1) {
-    totalStaked
-    stakes {
-      amount
-      participation
-      stakeData {
-        stakingProvider
-        owner
-        stakeType
-        authorizer
-        beneficiary
-      }
-    }
-  }
-}
-```
-
-=== Get stakes between two dates
-```
-{
-  epoches(
-    orderBy: startTime
-    orderDirection: asc
-    where: {startTime_gte: "<START_TIMESTAMP", startTime_lte: "END_TIMESTAMP"}
-  ) {
-    totalStaked
-    stakes {
-      amount
-      participation
-      stakeData {
-        stakingProvider
-        owner
-        stakeType
-        authorizer
-        beneficiary
-      }
-    }
-    startTime
-    duration
-  }
-}
-```
-
-=== Get stakes of a specific epoch
-```
-{
-  epoches(
-    orderBy: startTime
-    orderDirection: desc
-    first: 1
-    where: {startTime_lte: "<TIMESTAMP"}
-  ) {
-    totalStaked
-    stakes {
-      amount
-      participation
-      stakeData {
-        stakingProvider
-        owner
-        stakeType
-        authorizer
-        beneficiary
-      }
-    }
-  }
-}
+$ yarn husky install
 ```
 
 == Test the subgraph locally
@@ -185,8 +127,8 @@ deployed to your local chain.
 
 ==== Deploy the Keep Core contracts to local chain
 
-Clone https://github.com/keep-network/keep-core repo and make sure the
-`local` network config in
+Clone https://github.com/keep-network/keep-core repo and make sure the `local`
+network config in
 https://github.com/keep-network/keep-core/blob/main/solidity-v1/truffle-config.js#L8-L12[truffle-config.js]
 is correct for your local chain.
 
