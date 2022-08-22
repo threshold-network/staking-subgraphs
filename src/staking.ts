@@ -71,7 +71,11 @@ export function handleStaked(event: Staked): void {
   lastEpoch.duration = timestamp.minus(lastEpoch.timestamp)
   lastEpoch.save()
 
-  const epochStakes = populateNewEpochStakes(lastEpoch.stakes)
+  let epochStakes: string[] = []
+  if (lastEpoch.stakes) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    epochStakes = populateNewEpochStakes(lastEpoch.stakes!)
+  }
   const epochStakeId = getEpochStakeId(stakingProvider)
   const epochStake = new EpochStake(epochStakeId)
   epochStake.stakingProvider = stakingProvider
@@ -142,7 +146,11 @@ export function handleToppedUp(event: ToppedUp): void {
   lastEpoch.duration = timestamp.minus(lastEpoch.timestamp)
   lastEpoch.save()
 
-  const epochStakes = populateNewEpochStakes(lastEpoch.stakes)
+  let epochStakes: string[] = []
+  if (lastEpoch.stakes) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    epochStakes = populateNewEpochStakes(lastEpoch.stakes!)
+  }
   const epochStakeId = getEpochStakeId(stakingProvider)
   let epochStake = EpochStake.load(epochStakeId)
   if (!epochStake) {
@@ -227,7 +235,11 @@ export function handleUnstaked(event: Unstaked): void {
   lastEpoch.duration = timestamp.minus(lastEpoch.timestamp)
   lastEpoch.save()
 
-  const epochStakes = populateNewEpochStakes(lastEpoch.stakes)
+  let epochStakes: string[] = []
+  if (lastEpoch.stakes) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    epochStakes = populateNewEpochStakes(lastEpoch.stakes!)
+  }
   const epochStakeId = getEpochStakeId(stakingProvider)
   const epochStake = EpochStake.load(epochStakeId)
   if (epochStake) {

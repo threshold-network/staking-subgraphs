@@ -33,7 +33,7 @@ type Epoch @entity {
   timestamp: BigInt!
   duration: BigInt
   totalAmount: BigInt!
-  stakes: [EpochStake!]!
+  stakes: [EpochStake!]
 }
 
 type EpochCounter @entity {

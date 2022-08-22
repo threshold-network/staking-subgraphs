@@ -1,4 +1,4 @@
-import { Address } from "@graphprotocol/graph-ts"
+import { Address, BigInt } from "@graphprotocol/graph-ts"
 import {
   StakeDelegation,
   TokenholderDelegation,
@@ -19,22 +19,39 @@ export function getTokenholderDelegationId(delegate: Address): string {
 
 export function getOrCreateStakeDelegation(delegate: Address): StakeDelegation {
   const id = getStakeDelegationId(delegate)
-  const delegation = StakeDelegation.load(id)
+  let delegation = StakeDelegation.load(id)
 
-  return !delegation ? new StakeDelegation(id) : delegation
+  if (!delegation) {
+    delegation = new StakeDelegation(id)
+    delegation.totalWeight = BigInt.zero()
+  }
+
+  return delegation
 }
 
 export function getOrCreateTokenholderDelegation(
   delegate: Address
 ): TokenholderDelegation {
   const id = getTokenholderDelegationId(delegate)
-  const delegation = TokenholderDelegation.load(id)
+  let delegation = TokenholderDelegation.load(id)
 
-  return !delegation ? new TokenholderDelegation(id) : delegation
+  if (!delegation) {
+    delegation = new TokenholderDelegation(id)
+    delegation.totalWeight = BigInt.zero()
+    delegation.liquidWeight = BigInt.zero()
+  }
+
+  return delegation
 }
 
 export function getDaoMetric(): DAOMetric {
-  const metrics = DAOMetric.load(DAO_METRICS_ID)
+  let metrics = DAOMetric.load(DAO_METRICS_ID)
 
-  return !metrics ? new DAOMetric(DAO_METRICS_ID) : metrics
+  if (!metrics) {
+    metrics = new DAOMetric(DAO_METRICS_ID)
+    metrics.liquidTotal = BigInt.zero()
+    metrics.stakedTotal = BigInt.zero()
+  }
+
+  return metrics
 }
