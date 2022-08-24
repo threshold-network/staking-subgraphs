@@ -33,6 +33,7 @@ export function populateNewEpochStakes(stakes: string[]): string[] {
     if (epochStake) {
       const stakingProvider = Address.fromBytes(epochStake.stakingProvider)
       epochStake.id = getEpochStakeId(stakingProvider)
+      epochStake.epoch = getEpochCount().toString()
       epochStake.save()
       stakes[i] = epochStake.id
     }

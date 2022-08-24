@@ -22,6 +22,7 @@ type StakeData @entity {
 type EpochStake @entity {
   # ID is the staking prov. add. + epoch counter
   id: ID!
+  epoch: Epoch!
   stakingProvider: Bytes!
   owner: Bytes!
   amount: BigInt!
