@@ -66,10 +66,12 @@ export function handleStaked(event: Staked): void {
     .plus(stakeData.nuInTStake)
   stakeData.save()
 
-  const lastEpoch = getOrCreateLastEpoch()
   const timestamp = event.block.timestamp
+  const lastEpoch = getOrCreateLastEpoch()
   lastEpoch.duration = timestamp.minus(lastEpoch.timestamp)
   lastEpoch.save()
+
+  const epochId = getEpochCount().toString()
 
   let epochStakes: string[] = []
   if (lastEpoch.stakes) {
@@ -78,13 +80,14 @@ export function handleStaked(event: Staked): void {
   }
   const epochStakeId = getEpochStakeId(stakingProvider)
   const epochStake = new EpochStake(epochStakeId)
+  epochStake.epoch = epochId
   epochStake.stakingProvider = stakingProvider
   epochStake.owner = owner
   epochStake.amount = amount
   epochStake.save()
   epochStakes.push(epochStake.id)
 
-  const epoch = new Epoch(getEpochCount().toString())
+  const epoch = new Epoch(epochId)
   epoch.timestamp = timestamp
   epoch.totalAmount = lastEpoch.totalAmount.plus(amount)
   epoch.stakes = epochStakes
@@ -141,8 +144,8 @@ export function handleToppedUp(event: ToppedUp): void {
   }
   stakeData.save()
 
-  const lastEpoch = getOrCreateLastEpoch()
   const timestamp = event.block.timestamp
+  const lastEpoch = getOrCreateLastEpoch()
   lastEpoch.duration = timestamp.minus(lastEpoch.timestamp)
   lastEpoch.save()
 
@@ -151,10 +154,14 @@ export function handleToppedUp(event: ToppedUp): void {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     epochStakes = populateNewEpochStakes(lastEpoch.stakes!)
   }
+
+  const epochId = getEpochCount().toString()
+
   const epochStakeId = getEpochStakeId(stakingProvider)
   let epochStake = EpochStake.load(epochStakeId)
   if (!epochStake) {
     epochStake = new EpochStake(epochStakeId)
+    epochStake.epoch = epochId
     epochStake.stakingProvider = stakingProvider
     epochStake.owner = Address.fromHexString(stakeData.owner)
     epochStake.amount = BigInt.zero()
@@ -163,7 +170,7 @@ export function handleToppedUp(event: ToppedUp): void {
   epochStake.amount = epochStake.amount.plus(amount)
   epochStake.save()
 
-  const epoch = new Epoch(getEpochCount().toString())
+  const epoch = new Epoch(epochId)
   epoch.timestamp = timestamp
   epoch.totalAmount = lastEpoch.totalAmount.plus(amount)
   epoch.stakes = epochStakes
@@ -230,8 +237,8 @@ export function handleUnstaked(event: Unstaked): void {
   }
   stakeData.save()
 
-  const lastEpoch = getOrCreateLastEpoch()
   const timestamp = event.block.timestamp
+  const lastEpoch = getOrCreateLastEpoch()
   lastEpoch.duration = timestamp.minus(lastEpoch.timestamp)
   lastEpoch.save()
 
