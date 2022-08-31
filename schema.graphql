@@ -4,7 +4,6 @@ type Account @entity {
   id: ID!
   stakes: [StakeData!] @derivedFrom(field: "owner")
   delegatee: TokenholderDelegation
-  # TODO add more fields example `tokenBalances`.
 }
 
 "StakeData represents the information about each stake"
@@ -71,27 +70,22 @@ interface Delegation {
   totalWeight: BigInt!
 }
 
-"StakeDelegation represents staked T tokens to which DAO's voting power has been delegated"
+"StakeDelegation represents the delegatee to whom the Stake DAO voting power has been delegated"
 type StakeDelegation implements Delegation @entity {
   "ID is delegatee ETH address"
   id: ID!
+  "Stakes in the T network, tracked by T staking contract"
   totalWeight: BigInt!
   stakeDelegators: [StakeData!] @derivedFrom(field: "delegatee")
 }
 
-"TokenholderDelegation represents liquid T tokens to which DAO's voting power has been delegated"
+"TokenholderDelegation represents the delegatee to whom the TokenHolder DAO voting power has been delegated"
 type TokenholderDelegation implements Delegation @entity {
   "ID is delegatee ETH address"
   id: ID!
-  # The voting weight from the snapshot mechanism in the token and staking
-  # contracts. For Tokenholder DAO, there are currently two voting power
-  # sources:
-  # - Liquid T, tracked by the T token contract
-  # - Stakes in the T network, tracked  by the T staking contract. Note that
-  #   this also tracks legacy stakes (NU/KEEP); legacy stakes count for
-  #   tokenholders' voting power, but not for the total voting power of the
-  #   Tokenholder DAO (as it's already accounted by the Vending Machines).
+  "Liquid T plus staked T in the T network. Legacy stakes (NU/KEEP) count for tokenholders' voting power, but not for the total voting power of the Tokenholder DAO (as it's already accounted by the Vending Machines)"
   totalWeight: BigInt!
+  "Liquid T, tracked by the T Token contract"
   liquidWeight: BigInt!
   delegators: [Account!] @derivedFrom(field: "delegatee")
 }
