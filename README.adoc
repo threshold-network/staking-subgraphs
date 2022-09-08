@@ -12,27 +12,6 @@ toc::[]
 NOTE: Development query URL:
 https://api.studio.thegraph.com/query/24143/main-threshold-subgraph/0.0.6
 
-== GraphQL relevant entities
-
-- `Account`: represents the base user data: user's stakes and delegations.
-
-- `StakeData`: information (owner, delegates, token amount...) about each stake.
-
-- `Epoch`: each staking event (i.e staked, toppedup and unstaked) creates a new
-epoch, so the duration of these is variable. It contains a list of the stakes at
-that time (EpochStakes).
-
-- `EpochStake`: information about the token amounts staked in each epoch.
-
-- `MinStakeAmount`: minimum amount of tokens allowed to stake in Threshold
-Network.
-
-- `PREOperator`: PRE application stake operator's address and timestamp of
-operator confirmation. If timestamp is null, the operator has been bonded but
-not confirmed.
-
-- `DAOMetric`: metrics about the amount of liquid and staked tokens in DAO.
-
 == Install, build and deploy subgraph
 
 === Prerequisites

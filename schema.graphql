@@ -1,26 +1,32 @@
+"Account represents the base user data: user's stakes and delegations"
 type Account @entity {
-  # Id is the ethereum address of the account.
+  "ID is the account's ETH address"
   id: ID!
   stakes: [StakeData!] @derivedFrom(field: "owner")
   delegatee: TokenholderDelegation
-  # TODO add more fields example `tokenBalances`.
 }
 
+"StakeData represents the information about each stake"
 type StakeData @entity {
-  # ID is the staking provider address
+  "ID is the staking provider's ETH address"
   id: ID!
   owner: Account!
   beneficiary: Bytes!
   authorizer: Bytes!
+  "Staked native T token amount"
   tStake: BigInt!
+  "Staked legacy KEEP token amount converted to T"
   keepInTStake: BigInt!
+  "Staked legacy Nu token amount converted to T"
   nuInTStake: BigInt!
+  "Staked T token total amount (T + KEEP in T + Nu in T)"
   totalStaked: BigInt!
   delegatee: StakeDelegation
 }
 
+"EpochStake represents a single stake in a single epoch"
 type EpochStake @entity {
-  # ID is the staking prov. add. + epoch counter
+  "ID is the staking provider's ETH address + epoch counter"
   id: ID!
   epoch: Epoch!
   stakingProvider: Bytes!
@@ -28,22 +34,30 @@ type EpochStake @entity {
   amount: BigInt!
 }
 
+"Epoch represents the staking status of the network at each time instant"
 type Epoch @entity {
-  # ID is a counter starting 0
+  "ID is a counter number starting at 0"
   id: ID!
+  "UNIX timestamp in which this epoch begins"
   timestamp: BigInt!
+  "Duration of this epoch in seconds"
   duration: BigInt
+  "T total amount resulted of all stakes in this epoch"
   totalAmount: BigInt!
+  "List of active stakes during this epoch"
   stakes: [EpochStake!]
 }
 
+"EpochCounter represents the amount of epochs up to this moment"
 type EpochCounter @entity {
-  # Singleton entity, id = epoch-counter
+  "ID is 'epoch-counter' (singleton entity)"
   id: ID!
   count: Int!
 }
 
+"MinStakeAmount represents the minimum amount of tokens to stake"
 type MinStakeAmount @entity {
+  "ID is min-stake + transaction hash in which the amount changed"
   id: ID!
   amount: BigInt!
   updatedAt: BigInt!
@@ -56,40 +70,43 @@ interface Delegation {
   totalWeight: BigInt!
 }
 
+"StakeDelegation represents the delegatee to whom the Stake DAO voting power has been delegated"
 type StakeDelegation implements Delegation @entity {
-  # ID is the delegatee address
+  "ID is delegatee ETH address"
   id: ID!
+  "Stakes in the T network, tracked by T staking contract"
   totalWeight: BigInt!
   stakeDelegators: [StakeData!] @derivedFrom(field: "delegatee")
 }
 
+"TokenholderDelegation represents the delegatee to whom the TokenHolder DAO voting power has been delegated"
 type TokenholderDelegation implements Delegation @entity {
-  # ID is the delegatee address
+  "ID is delegatee ETH address"
   id: ID!
-  # The voting weight from the snapshot mechanism in the token and staking
-  # contracts. For Tokenholder DAO, there are currently two voting power
-  # sources:
-  # - Liquid T, tracked by the T token contract
-  # - Stakes in the T network, tracked  by the T staking contract. Note that
-  #   this also tracks legacy stakes (NU/KEEP); legacy stakes count for
-  #   tokenholders' voting power, but not for the total voting power of the
-  #   Tokenholder DAO (as it's already accounted by the Vending Machines).
+  "Liquid T plus staked T in the T network. Legacy stakes (NU/KEEP) count for tokenholders' voting power, but not for the total voting power of the Tokenholder DAO (as it's already accounted by the Vending Machines)"
   totalWeight: BigInt!
+  "Liquid T, tracked by the T Token contract"
   liquidWeight: BigInt!
   delegators: [Account!] @derivedFrom(field: "delegatee")
 }
 
+"SimplePREApplication represents the state of Simple Proxy ReEncryption operators"
 type SimplePREApplication @entity {
-  # ID is the staking provider address
+  "ID is the staking provider ETH address"
   id: ID!
+  "Operator's ETH address"
   operator: Bytes!
+  "Stake related to this PRE operator"
   stake: StakeData!
+  "UNIX timestamp in which operator was bonded"
   bondedTimestamp: BigInt!
+  "UNIX timestamp in which operator was confirmed (or null if not yet confirmed)"
   confirmedTimestamp: BigInt
 }
 
+"DAOMetric represents the liquid and staked T tokens in Threshold Network DAO"
 type DAOMetric @entity {
-  # Singleton entity, id = dao-metrics
+  "ID is 'dao-metrics' (singleton entity)"
   id: ID!
   liquidTotal: BigInt!
   stakedTotal: BigInt!
