@@ -98,9 +98,9 @@ type SimplePREApplication @entity {
   operator: Bytes!
   "Stake related to this PRE operator"
   stake: StakeData!
-  "UNIX timestamp in which operator was bonded"
-  bondedTimestamp: BigInt!
-  "UNIX timestamp in which operator was confirmed (or null if not yet confirmed)"
+  "UNIX timestamp in which an operator was bonded for this staking provider for first time"
+  bondedTimestamp: BigInt
+  "UNIX timestamp in which an operator was confirmed for this staking provider for first time"
   confirmedTimestamp: BigInt
 }
 
