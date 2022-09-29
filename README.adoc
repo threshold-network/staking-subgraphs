@@ -10,7 +10,7 @@ data is indexed by https://thegraph.com[*The Graph*] decentralized protocol.
 toc::[]
 
 NOTE: Development query URL:
-https://api.studio.thegraph.com/query/24143/main-threshold-subgraph/0.0.6
+https://api.studio.thegraph.com/query/24143/main-threshold-subgraph/0.0.7
 
 == Install, build and deploy subgraph
 
