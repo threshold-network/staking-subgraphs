@@ -16,7 +16,9 @@ export function handleOperatorBonded(event: OperatorBonded): void {
   } else {
     preApplication.operator = operator
     preApplication.stake = stakingProvider.toHexString()
-    preApplication.bondedTimestamp = timestamp
+    if (!preApplication.bondedTimestamp) {
+      preApplication.bondedTimestamp = timestamp
+    }
     preApplication.save()
   }
 }
@@ -28,6 +30,8 @@ export function handleOperatorConfirmed(event: OperatorConfirmed): void {
 
   const preApplication = getOrCreatePreApplication(stakingProvider)
   preApplication.operator = operator
-  preApplication.confirmedTimestamp = timestamp
+  if (!preApplication.confirmedTimestamp) {
+    preApplication.confirmedTimestamp = timestamp
+  }
   preApplication.save()
 }
