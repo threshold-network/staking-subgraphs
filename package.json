@@ -2,6 +2,7 @@
   "name": "threshold-subgraph",
   "license": "GPL-3.0-or-later",
   "scripts": {
+    "prepare": "husky install",
     "lint": "eslint --ignore-path .linterignore",
     "lint:fix": "yarn lint --fix",
     "prettier": "prettier --ignore-path .linterignore",

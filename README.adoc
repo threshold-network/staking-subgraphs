@@ -74,12 +74,6 @@ $ yarn lint:fix <file_path>
 $ yarn format:lint:fix <file_path>  # fix files using Prettier and ESLint
 ```
 
-We encourage to use Git hooks to check code style. To install Git hooks, run:
-
-```
-$ yarn husky install
-```
-
 == Test the subgraph locally
 
 === Run local chain eg. Ganache
