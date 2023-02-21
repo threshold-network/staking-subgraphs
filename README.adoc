@@ -1,8 +1,8 @@
 :toc: macro
 
-= Threshold Network subgraph
+= Threshold Network staking subgraph
 
-This repository contains Threshold Network subgraph.
+This repository contains Threshold Network staking subgraph.
 
 Subgraphs are open APIs to query data from networks like Ethereum and IPFS. The
 data is indexed by https://thegraph.com[*The Graph*] decentralized protocol.
