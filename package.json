@@ -1,5 +1,5 @@
 {
-  "name": "threshold-subgraph",
+  "name": "threshold-staking-subgraph",
   "license": "GPL-3.0-or-later",
   "scripts": {
     "prepare": "husky install",
@@ -12,10 +12,10 @@
     "lint:format:fix": "yarn format:fix . && yarn lint:fix .",
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ Threshold",
-    "create-local": "graph create --node http://localhost:8020/ Threshold",
-    "remove-local": "graph remove --node http://localhost:8020/ Threshold",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 Threshold"
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ threshold",
+    "create-local": "graph create --node http://localhost:8020/ threshold",
+    "remove-local": "graph remove --node http://localhost:8020/ threshold",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 threshold"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
