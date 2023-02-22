@@ -65,7 +65,7 @@ type MinStakeAmount @entity {
 }
 
 interface Delegation {
-  # The delegatee address
+  "The delegatee address"
   id: ID!
   totalWeight: BigInt!
 }
