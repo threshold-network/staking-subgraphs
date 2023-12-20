@@ -24,8 +24,8 @@
     ]
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "0.41.0",
-    "@graphprotocol/graph-ts": "0.29.3"
+    "@graphprotocol/graph-cli": "0.64.0",
+    "@graphprotocol/graph-ts": "0.32.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "5.27.0",
