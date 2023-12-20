@@ -22,6 +22,7 @@ type StakeData @entity {
   "Staked T token total amount (T + KEEP in T + Nu in T)"
   totalStaked: BigInt!
   delegatee: StakeDelegation
+  authorizations: [AppAuthorization!] @derivedFrom(field: "stake")
 }
 
 "EpochStake represents a single stake in a single epoch"
@@ -110,4 +111,20 @@ type DAOMetric @entity {
   id: ID!
   liquidTotal: BigInt!
   stakedTotal: BigInt!
+}
+
+"AppAuthorizations represents the stake authorizations to Threshold apps"
+type AppAuthorization @entity {
+  "ID is <application address>-<staking provider address>"
+  id: ID!
+  "Application contract address"
+  appAddress: Bytes!
+  "Stake data of the staking provider"
+  stake: StakeData!
+  "Amount of total T authorized by staking provider to the application"
+  amount: BigInt!
+  "Amount of T that will left after the deauthorization process"
+  amountDeauthorizingTo: BigInt!
+  "Application name (if known)"
+  app: String
 }
