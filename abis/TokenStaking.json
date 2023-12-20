@@ -3,28 +3,8 @@
     "inputs": [
       { "internalType": "contract T", "name": "_token", "type": "address" },
       {
-        "internalType": "contract IKeepTokenStaking",
-        "name": "_keepStakingContract",
-        "type": "address"
-      },
-      {
-        "internalType": "contract INuCypherStakingEscrow",
-        "name": "_nucypherStakingContract",
-        "type": "address"
-      },
-      {
-        "internalType": "contract VendingMachine",
-        "name": "_keepVendingMachine",
-        "type": "address"
-      },
-      {
         "internalType": "contract VendingMachine",
         "name": "_nucypherVendingMachine",
-        "type": "address"
-      },
-      {
-        "internalType": "contract KeepStake",
-        "name": "_keepStake",
         "type": "address"
       }
     ],
@@ -199,6 +179,25 @@
       {
         "indexed": true,
         "internalType": "address",
+        "name": "stakingProvider",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "autoIncrease",
+        "type": "bool"
+      }
+    ],
+    "name": "AutoIncreaseToggled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
         "name": "delegator",
         "type": "address"
       },
@@ -345,31 +344,6 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "stakingProvider",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "oldOwner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnerRefreshed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
         "name": "application",
         "type": "address"
       },
@@ -406,25 +380,6 @@
       }
     ],
     "name": "SlashingProcessed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint96",
-        "name": "penalty",
-        "type": "uint96"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "rewardMultiplier",
-        "type": "uint256"
-      }
-    ],
-    "name": "StakeDiscrepancyPenaltySet",
     "type": "event"
   },
   {
@@ -664,9 +619,48 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "stakingProvider",
+        "type": "address"
+      }
+    ],
+    "name": "forceUnstakeLegacy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "_stakingProviders",
+        "type": "address[]"
+      }
+    ],
+    "name": "forceUnstakeLegacy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "getApplicationsLength",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "stakingProvider",
+        "type": "address"
+      }
+    ],
+    "name": "getAutoIncreaseFlag",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -804,32 +798,6 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "stakingProvider",
-        "type": "address"
-      }
-    ],
-    "name": "notifyKeepStakeDiscrepancy",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "stakingProvider",
-        "type": "address"
-      }
-    ],
-    "name": "notifyNuStakeDiscrepancy",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
       { "internalType": "address", "name": "account", "type": "address" }
     ],
     "name": "numCheckpoints",
@@ -860,19 +828,6 @@
       { "internalType": "uint96", "name": "reward", "type": "uint96" }
     ],
     "name": "pushNotificationReward",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "stakingProvider",
-        "type": "address"
-      }
-    ],
-    "name": "refreshKeepStakeOwner",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -985,20 +940,6 @@
   },
   {
     "inputs": [
-      { "internalType": "uint96", "name": "penalty", "type": "uint96" },
-      {
-        "internalType": "uint256",
-        "name": "rewardMultiplier",
-        "type": "uint256"
-      }
-    ],
-    "name": "setStakeDiscrepancyPenalty",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
       { "internalType": "uint96", "name": "amount", "type": "uint96" },
       {
         "internalType": "address[]",
@@ -1020,8 +961,7 @@
         "name": "stakingProvider",
         "type": "address"
       },
-      { "internalType": "uint96", "name": "amount", "type": "uint96" },
-      { "internalType": "address", "name": "application", "type": "address" }
+      { "internalType": "uint96", "name": "amount", "type": "uint96" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -1049,52 +989,6 @@
       { "internalType": "uint96", "name": "amount", "type": "uint96" }
     ],
     "name": "stake",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "stakeDiscrepancyPenalty",
-    "outputs": [{ "internalType": "uint96", "name": "", "type": "uint96" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "stakeDiscrepancyRewardMultiplier",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "stakingProvider",
-        "type": "address"
-      }
-    ],
-    "name": "stakeKeep",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "stakingProvider",
-        "type": "address"
-      },
-      {
-        "internalType": "address payable",
-        "name": "beneficiary",
-        "type": "address"
-      },
-      { "internalType": "address", "name": "authorizer", "type": "address" }
-    ],
-    "name": "stakeNu",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1137,36 +1031,23 @@
         "internalType": "address",
         "name": "stakingProvider",
         "type": "address"
+      }
+    ],
+    "name": "toggleAutoAuthorizationIncrease",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "stakingProvider",
+        "type": "address"
       },
       { "internalType": "uint96", "name": "amount", "type": "uint96" }
     ],
     "name": "topUp",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "stakingProvider",
-        "type": "address"
-      }
-    ],
-    "name": "topUpKeep",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "stakingProvider",
-        "type": "address"
-      }
-    ],
-    "name": "topUpNu",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1212,8 +1093,7 @@
         "internalType": "address",
         "name": "stakingProvider",
         "type": "address"
-      },
-      { "internalType": "uint96", "name": "amount", "type": "uint96" }
+      }
     ],
     "name": "unstakeNu",
     "outputs": [],
