@@ -128,3 +128,17 @@ type AppAuthorization @entity {
   "Application name (if known)"
   app: String
 }
+
+"AppAuthorizationInBlock represents the stake authorization to Threhold app in a specific block"
+type AppAuthorizationInBlock @entity {
+  "ID is <block number>-<application address>-<staking provider address>"
+  id: ID!
+  "Block in which this authorization was in effect"
+  blockNumber: BigInt!
+  "Application contract address"
+  appAddress: Bytes!
+  "Staking provider address"
+  stakingProvider: Bytes!
+  "Amount of total T authorized by staking provider to the application in this block"
+  amount: BigInt!
+}

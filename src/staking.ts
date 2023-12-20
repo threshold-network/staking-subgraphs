@@ -25,6 +25,7 @@ import {
   Account,
   MinStakeAmount,
   AppAuthorization,
+  AppAuthorizationInBlock,
 } from "../generated/schema"
 import {
   getDaoMetric,
@@ -350,6 +351,19 @@ export function handleAuthorizationIncreased(
   appAuthorization.amountDeauthorizingTo = BigInt.zero()
   appAuthorization.app = appName
   appAuthorization.save()
+
+  const appAuthInBlockId =
+    event.block.number.toString() +
+    "-" +
+    appAddress.toHexString() +
+    "-" +
+    stakingProvider.toHexString()
+  const appAuthInBlock = new AppAuthorizationInBlock(appAuthInBlockId)
+  appAuthInBlock.blockNumber = event.block.number
+  appAuthInBlock.appAddress = appAddress
+  appAuthInBlock.stakingProvider = stakingProvider
+  appAuthInBlock.amount = toAmount
+  appAuthInBlock.save()
 }
 
 export function handleAuthorizationDecreaseRequested(
@@ -380,6 +394,19 @@ export function handleAuthorizationDecreaseApproved(
     appAuthorization.amountDeauthorizingTo = BigInt.zero()
     appAuthorization.save()
   }
+
+  const appAuthInBlockId =
+    event.block.number.toString() +
+    "-" +
+    appAddress.toHexString() +
+    "-" +
+    stakingProvider.toHexString()
+  const appAuthInBlock = new AppAuthorizationInBlock(appAuthInBlockId)
+  appAuthInBlock.blockNumber = event.block.number
+  appAuthInBlock.appAddress = appAddress
+  appAuthInBlock.stakingProvider = stakingProvider
+  appAuthInBlock.amount = toAmount
+  appAuthInBlock.save()
 }
 
 export function handleAuthorizationInvoluntaryDecreased(
@@ -403,4 +430,17 @@ export function handleAuthorizationInvoluntaryDecreased(
     }
     appAuthorization.save()
   }
+
+  const appAuthInBlockId =
+    event.block.number.toString() +
+    "-" +
+    appAddress.toHexString() +
+    "-" +
+    stakingProvider.toHexString()
+  const appAuthInBlock = new AppAuthorizationInBlock(appAuthInBlockId)
+  appAuthInBlock.blockNumber = event.block.number
+  appAuthInBlock.appAddress = appAddress
+  appAuthInBlock.stakingProvider = stakingProvider
+  appAuthInBlock.amount = toAmount
+  appAuthInBlock.save()
 }
