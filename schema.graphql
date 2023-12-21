@@ -135,6 +135,8 @@ type AppAuthorizationInBlock @entity {
   id: ID!
   "Block in which this authorization was in effect"
   blockNumber: BigInt!
+  "Timestamp of the block in which authorization was in effect"
+  timestamp: BigInt!
   "Application contract address"
   appAddress: Bytes!
   "Staking provider address"

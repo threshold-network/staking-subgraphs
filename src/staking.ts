@@ -360,6 +360,7 @@ export function handleAuthorizationIncreased(
     stakingProvider.toHexString()
   const appAuthInBlock = new AppAuthorizationInBlock(appAuthInBlockId)
   appAuthInBlock.blockNumber = event.block.number
+  appAuthInBlock.timestamp = event.block.timestamp
   appAuthInBlock.appAddress = appAddress
   appAuthInBlock.stakingProvider = stakingProvider
   appAuthInBlock.amount = toAmount
@@ -403,6 +404,7 @@ export function handleAuthorizationDecreaseApproved(
     stakingProvider.toHexString()
   const appAuthInBlock = new AppAuthorizationInBlock(appAuthInBlockId)
   appAuthInBlock.blockNumber = event.block.number
+  appAuthInBlock.timestamp = event.block.timestamp
   appAuthInBlock.appAddress = appAddress
   appAuthInBlock.stakingProvider = stakingProvider
   appAuthInBlock.amount = toAmount
@@ -439,6 +441,7 @@ export function handleAuthorizationInvoluntaryDecreased(
     stakingProvider.toHexString()
   const appAuthInBlock = new AppAuthorizationInBlock(appAuthInBlockId)
   appAuthInBlock.blockNumber = event.block.number
+  appAuthInBlock.timestamp = event.block.timestamp
   appAuthInBlock.appAddress = appAddress
   appAuthInBlock.stakingProvider = stakingProvider
   appAuthInBlock.amount = toAmount
