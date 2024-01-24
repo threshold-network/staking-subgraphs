@@ -90,20 +90,6 @@ type TokenholderDelegation implements Delegation @entity {
   delegators: [Account!] @derivedFrom(field: "delegatee")
 }
 
-"SimplePREApplication represents the state of Simple Proxy ReEncryption operators"
-type SimplePREApplication @entity {
-  "ID is the staking provider ETH address"
-  id: ID!
-  "Operator's ETH address"
-  operator: Bytes!
-  "Stake related to this PRE operator"
-  stake: StakeData!
-  "UNIX timestamp in which an operator was bonded for this staking provider for first time"
-  bondedTimestamp: BigInt
-  "UNIX timestamp in which an operator was confirmed for this staking provider for first time"
-  confirmedTimestamp: BigInt
-}
-
 "DAOMetric represents the liquid and staked T tokens in Threshold Network DAO"
 type DAOMetric @entity {
   "ID is 'dao-metrics' (singleton entity)"
