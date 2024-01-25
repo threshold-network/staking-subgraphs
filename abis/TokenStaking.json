@@ -1,7 +1,11 @@
 [
   {
     "inputs": [
-      { "internalType": "contract T", "name": "_token", "type": "address" },
+      {
+        "internalType": "contract T",
+        "name": "_token",
+        "type": "address"
+      },
       {
         "internalType": "contract IKeepTokenStaking",
         "name": "_keepStakingContract",
@@ -534,7 +538,13 @@
     "type": "event"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "name": "applicationInfo",
     "outputs": [
       {
@@ -542,21 +552,41 @@
         "name": "status",
         "type": "uint8"
       },
-      { "internalType": "address", "name": "panicButton", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "panicButton",
+        "type": "address"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "name": "applications",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "application", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "application",
+        "type": "address"
+      }
     ],
     "name": "approveApplication",
     "outputs": [],
@@ -572,14 +602,26 @@
       }
     ],
     "name": "approveAuthorizationDecrease",
-    "outputs": [{ "internalType": "uint96", "name": "", "type": "uint96" }],
+    "outputs": [
+      {
+        "internalType": "uint96",
+        "name": "",
+        "type": "uint96"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "authorizationCeiling",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -590,24 +632,50 @@
         "name": "stakingProvider",
         "type": "address"
       },
-      { "internalType": "address", "name": "application", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "application",
+        "type": "address"
+      }
     ],
     "name": "authorizedStake",
-    "outputs": [{ "internalType": "uint96", "name": "", "type": "uint96" }],
+    "outputs": [
+      {
+        "internalType": "uint96",
+        "name": "",
+        "type": "uint96"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "account", "type": "address" },
-      { "internalType": "uint32", "name": "pos", "type": "uint32" }
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "internalType": "uint32",
+        "name": "pos",
+        "type": "uint32"
+      }
     ],
     "name": "checkpoints",
     "outputs": [
       {
         "components": [
-          { "internalType": "uint32", "name": "fromBlock", "type": "uint32" },
-          { "internalType": "uint96", "name": "votes", "type": "uint96" }
+          {
+            "internalType": "uint32",
+            "name": "fromBlock",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint96",
+            "name": "votes",
+            "type": "uint96"
+          }
         ],
         "internalType": "struct Checkpoints.Checkpoint",
         "name": "checkpoint",
@@ -624,7 +692,11 @@
         "name": "stakingProvider",
         "type": "address"
       },
-      { "internalType": "address", "name": "delegatee", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "delegatee",
+        "type": "address"
+      }
     ],
     "name": "delegateVoting",
     "outputs": [],
@@ -633,16 +705,30 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "account", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
     ],
     "name": "delegates",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "application", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "application",
+        "type": "address"
+      }
     ],
     "name": "disableApplication",
     "outputs": [],
@@ -656,7 +742,11 @@
         "name": "stakingProvider",
         "type": "address"
       },
-      { "internalType": "address", "name": "application", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "application",
+        "type": "address"
+      }
     ],
     "name": "forceDecreaseAuthorization",
     "outputs": [],
@@ -666,7 +756,13 @@
   {
     "inputs": [],
     "name": "getApplicationsLength",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -677,11 +773,19 @@
         "name": "stakingProvider",
         "type": "address"
       },
-      { "internalType": "address", "name": "application", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "application",
+        "type": "address"
+      }
     ],
     "name": "getAvailableToAuthorize",
     "outputs": [
-      { "internalType": "uint96", "name": "availableTValue", "type": "uint96" }
+      {
+        "internalType": "uint96",
+        "name": "availableTValue",
+        "type": "uint96"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -700,33 +804,69 @@
       }
     ],
     "name": "getMinStaked",
-    "outputs": [{ "internalType": "uint96", "name": "", "type": "uint96" }],
+    "outputs": [
+      {
+        "internalType": "uint96",
+        "name": "",
+        "type": "uint96"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "blockNumber", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "blockNumber",
+        "type": "uint256"
+      }
     ],
     "name": "getPastTotalSupply",
-    "outputs": [{ "internalType": "uint96", "name": "", "type": "uint96" }],
+    "outputs": [
+      {
+        "internalType": "uint96",
+        "name": "",
+        "type": "uint96"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "account", "type": "address" },
-      { "internalType": "uint256", "name": "blockNumber", "type": "uint256" }
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "blockNumber",
+        "type": "uint256"
+      }
     ],
     "name": "getPastVotes",
-    "outputs": [{ "internalType": "uint96", "name": "", "type": "uint96" }],
+    "outputs": [
+      {
+        "internalType": "uint96",
+        "name": "",
+        "type": "uint96"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "getSlashingQueueLength",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -739,23 +879,45 @@
       }
     ],
     "name": "getStartStakingTimestamp",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "account", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
     ],
     "name": "getVotes",
-    "outputs": [{ "internalType": "uint96", "name": "", "type": "uint96" }],
+    "outputs": [
+      {
+        "internalType": "uint96",
+        "name": "",
+        "type": "uint96"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "governance",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -766,8 +928,16 @@
         "name": "stakingProvider",
         "type": "address"
       },
-      { "internalType": "address", "name": "application", "type": "address" },
-      { "internalType": "uint96", "name": "amount", "type": "uint96" }
+      {
+        "internalType": "address",
+        "name": "application",
+        "type": "address"
+      },
+      {
+        "internalType": "uint96",
+        "name": "amount",
+        "type": "uint96"
+      }
     ],
     "name": "increaseAuthorization",
     "outputs": [],
@@ -784,21 +954,39 @@
   {
     "inputs": [],
     "name": "minTStakeAmount",
-    "outputs": [{ "internalType": "uint96", "name": "", "type": "uint96" }],
+    "outputs": [
+      {
+        "internalType": "uint96",
+        "name": "",
+        "type": "uint96"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "notificationReward",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "notifiersTreasury",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -830,16 +1018,30 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "account", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
     ],
     "name": "numCheckpoints",
-    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "application", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "application",
+        "type": "address"
+      }
     ],
     "name": "pauseApplication",
     "outputs": [],
@@ -848,7 +1050,11 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "count", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "count",
+        "type": "uint256"
+      }
     ],
     "name": "processSlashing",
     "outputs": [],
@@ -857,7 +1063,11 @@
   },
   {
     "inputs": [
-      { "internalType": "uint96", "name": "reward", "type": "uint96" }
+      {
+        "internalType": "uint96",
+        "name": "reward",
+        "type": "uint96"
+      }
     ],
     "name": "pushNotificationReward",
     "outputs": [],
@@ -884,8 +1094,16 @@
         "name": "stakingProvider",
         "type": "address"
       },
-      { "internalType": "address", "name": "application", "type": "address" },
-      { "internalType": "uint96", "name": "amount", "type": "uint96" }
+      {
+        "internalType": "address",
+        "name": "application",
+        "type": "address"
+      },
+      {
+        "internalType": "uint96",
+        "name": "amount",
+        "type": "uint96"
+      }
     ],
     "name": "requestAuthorizationDecrease",
     "outputs": [],
@@ -915,26 +1133,42 @@
     ],
     "name": "rolesOf",
     "outputs": [
-      { "internalType": "address", "name": "owner", "type": "address" },
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
       {
         "internalType": "address payable",
         "name": "beneficiary",
         "type": "address"
       },
-      { "internalType": "address", "name": "authorizer", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "authorizer",
+        "type": "address"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint96", "name": "amount", "type": "uint96" },
+      {
+        "internalType": "uint96",
+        "name": "amount",
+        "type": "uint96"
+      },
       {
         "internalType": "uint256",
         "name": "rewardMultiplier",
         "type": "uint256"
       },
-      { "internalType": "address", "name": "notifier", "type": "address" },
+      {
+        "internalType": "address",
+        "name": "notifier",
+        "type": "address"
+      },
       {
         "internalType": "address[]",
         "name": "_stakingProviders",
@@ -948,7 +1182,11 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "ceiling", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "ceiling",
+        "type": "uint256"
+      }
     ],
     "name": "setAuthorizationCeiling",
     "outputs": [],
@@ -957,7 +1195,11 @@
   },
   {
     "inputs": [
-      { "internalType": "uint96", "name": "amount", "type": "uint96" }
+      {
+        "internalType": "uint96",
+        "name": "amount",
+        "type": "uint96"
+      }
     ],
     "name": "setMinimumStakeAmount",
     "outputs": [],
@@ -966,7 +1208,11 @@
   },
   {
     "inputs": [
-      { "internalType": "uint96", "name": "reward", "type": "uint96" }
+      {
+        "internalType": "uint96",
+        "name": "reward",
+        "type": "uint96"
+      }
     ],
     "name": "setNotificationReward",
     "outputs": [],
@@ -975,8 +1221,16 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "application", "type": "address" },
-      { "internalType": "address", "name": "panicButton", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "application",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "panicButton",
+        "type": "address"
+      }
     ],
     "name": "setPanicButton",
     "outputs": [],
@@ -985,7 +1239,11 @@
   },
   {
     "inputs": [
-      { "internalType": "uint96", "name": "penalty", "type": "uint96" },
+      {
+        "internalType": "uint96",
+        "name": "penalty",
+        "type": "uint96"
+      },
       {
         "internalType": "uint256",
         "name": "rewardMultiplier",
@@ -999,7 +1257,11 @@
   },
   {
     "inputs": [
-      { "internalType": "uint96", "name": "amount", "type": "uint96" },
+      {
+        "internalType": "uint96",
+        "name": "amount",
+        "type": "uint96"
+      },
       {
         "internalType": "address[]",
         "name": "_stakingProviders",
@@ -1012,7 +1274,13 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "name": "slashingQueue",
     "outputs": [
       {
@@ -1020,8 +1288,11 @@
         "name": "stakingProvider",
         "type": "address"
       },
-      { "internalType": "uint96", "name": "amount", "type": "uint96" },
-      { "internalType": "address", "name": "application", "type": "address" }
+      {
+        "internalType": "uint96",
+        "name": "amount",
+        "type": "uint96"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -1029,7 +1300,13 @@
   {
     "inputs": [],
     "name": "slashingQueueIndex",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -1045,8 +1322,16 @@
         "name": "beneficiary",
         "type": "address"
       },
-      { "internalType": "address", "name": "authorizer", "type": "address" },
-      { "internalType": "uint96", "name": "amount", "type": "uint96" }
+      {
+        "internalType": "address",
+        "name": "authorizer",
+        "type": "address"
+      },
+      {
+        "internalType": "uint96",
+        "name": "amount",
+        "type": "uint96"
+      }
     ],
     "name": "stake",
     "outputs": [],
@@ -1056,14 +1341,26 @@
   {
     "inputs": [],
     "name": "stakeDiscrepancyPenalty",
-    "outputs": [{ "internalType": "uint96", "name": "", "type": "uint96" }],
+    "outputs": [
+      {
+        "internalType": "uint96",
+        "name": "",
+        "type": "uint96"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "stakeDiscrepancyRewardMultiplier",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -1092,7 +1389,11 @@
         "name": "beneficiary",
         "type": "address"
       },
-      { "internalType": "address", "name": "authorizer", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "authorizer",
+        "type": "address"
+      }
     ],
     "name": "stakeNu",
     "outputs": [],
@@ -1109,7 +1410,11 @@
     ],
     "name": "stakedNu",
     "outputs": [
-      { "internalType": "uint256", "name": "nuAmount", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "nuAmount",
+        "type": "uint256"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -1124,9 +1429,21 @@
     ],
     "name": "stakes",
     "outputs": [
-      { "internalType": "uint96", "name": "tStake", "type": "uint96" },
-      { "internalType": "uint96", "name": "keepInTStake", "type": "uint96" },
-      { "internalType": "uint96", "name": "nuInTStake", "type": "uint96" }
+      {
+        "internalType": "uint96",
+        "name": "tStake",
+        "type": "uint96"
+      },
+      {
+        "internalType": "uint96",
+        "name": "keepInTStake",
+        "type": "uint96"
+      },
+      {
+        "internalType": "uint96",
+        "name": "nuInTStake",
+        "type": "uint96"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -1138,7 +1455,11 @@
         "name": "stakingProvider",
         "type": "address"
       },
-      { "internalType": "uint96", "name": "amount", "type": "uint96" }
+      {
+        "internalType": "uint96",
+        "name": "amount",
+        "type": "uint96"
+      }
     ],
     "name": "topUp",
     "outputs": [],
@@ -1173,7 +1494,11 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "newGuvnor", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "newGuvnor",
+        "type": "address"
+      }
     ],
     "name": "transferGovernance",
     "outputs": [],
@@ -1213,7 +1538,11 @@
         "name": "stakingProvider",
         "type": "address"
       },
-      { "internalType": "uint96", "name": "amount", "type": "uint96" }
+      {
+        "internalType": "uint96",
+        "name": "amount",
+        "type": "uint96"
+      }
     ],
     "name": "unstakeNu",
     "outputs": [],
@@ -1227,7 +1556,11 @@
         "name": "stakingProvider",
         "type": "address"
       },
-      { "internalType": "uint96", "name": "amount", "type": "uint96" }
+      {
+        "internalType": "uint96",
+        "name": "amount",
+        "type": "uint96"
+      }
     ],
     "name": "unstakeT",
     "outputs": [],
@@ -1236,8 +1569,16 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "recipient", "type": "address" },
-      { "internalType": "uint96", "name": "amount", "type": "uint96" }
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint96",
+        "name": "amount",
+        "type": "uint96"
+      }
     ],
     "name": "withdrawNotificationReward",
     "outputs": [],
