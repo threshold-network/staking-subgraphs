@@ -1,3 +1,10 @@
+# Matchstick binaries
+tests/.*
+matchstick
+
+# Test coverage tools
+tests/.tools/
+
 # Local
 .DS_Store
 .idea
