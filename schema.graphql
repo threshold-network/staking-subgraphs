@@ -109,3 +109,11 @@ type TACoOperator @entity {
   "Timestamp in which the first operator of this staking provider was bonded"
   bondedTimestampFirstOperator: BigInt
 }
+
+"TACo commitments made by a staking provider"
+type TACoCommitment @entity(immutable: true) {
+  "ID is the staking provider address"
+  id: ID!
+  "Timestamp of the end of the lock-up"
+  endCommitment: BigInt!
+}

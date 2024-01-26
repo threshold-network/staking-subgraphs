@@ -1,4 +1,6 @@
 specVersion: 0.0.5
+description: Threshold Network staking data
+repository: https://github.com/threshold-network/staking-subgraph
 schema:
   file: ./schema.graphql
 dataSources:
@@ -74,10 +76,13 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - TACoOperator
+        - TACoCommitment
       abis:
         - name: TACoApplication
           file: ./abis/TACoApplication.json
       eventHandlers:
         - event: OperatorBonded(indexed address,indexed address,indexed address,uint256)
           handler: handleOperatorBonded
+        - event: CommitmentMade(indexed address,uint256)
+          handler: handleCommitmentMade
       file: ./src/taco-application.ts
