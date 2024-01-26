@@ -18,7 +18,7 @@ https://api.studio.thegraph.com/query/24143/main-threshold-subgraph/0.0.7
 
 Please make sure you have the following prerequisites installed on your machine:
 
-- https://nodejs.org[Node.js] >14.17.4 - https://yarnpkg.com[Yarn] >1.22.10
+- https://nodejs.org[Node.js] ^18.19.0 - https://yarnpkg.com[Yarn] ^1.22.21
 
 === Installation
 
@@ -39,6 +39,21 @@ $ yarn install
 ```
 $ graph codegen && graph build
 ```
+
+
+=== Run unit tests
+
+The recommended way to run tests is using a Docker container. It is required to
+have [Docker installed](https://docs.docker.com/desktop/).
+
+To run the tests, just execute:
+
+```
+$ yarn test
+```
+
+Tests can also be run in the local environment, more info in
+[Unit Testing Framework](https://thegraph.com/docs/en/developing/unit-testing-framework/).
 
 === Deploy subgraph
 
