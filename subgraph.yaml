@@ -61,3 +61,26 @@ dataSources:
         - event: DelegateVotesChanged(indexed address,uint256,uint256)
           handler: handleDelegateVotesChanged
       file: ./src/threshold-token.ts
+  - kind: ethereum
+    name: TACoApplication
+    network: mainnet
+    source:
+      address: "0x347CC7ede7e5517bD47D20620B2CF1b406edcF07"
+      abi: TACoApplication
+      startBlock: 18622368
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - OperatorBonded
+        - OperatorConfirmed
+      abis:
+        - name: TACoApplication
+          file: ./abis/TACoApplication.json
+      eventHandlers:
+        - event: OperatorBonded(indexed address,indexed address,indexed address,uint256)
+          handler: handleOperatorBonded
+        - event: OperatorConfirmed(indexed address,indexed address)
+          handler: handleOperatorConfirmed
+      file: ./src/taco-application.ts

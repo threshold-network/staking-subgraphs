@@ -97,3 +97,19 @@ type DAOMetric @entity {
   liquidTotal: BigInt!
   stakedTotal: BigInt!
 }
+
+"TACoOperator represents the TACo operator's info of a staking provider"
+type TACoOperator @entity {
+  "ID is the staking provider address"
+  id: ID!
+  "Operator's address"
+  operator: Bytes!
+  "Timestamp in which the current operator was bonded to the staking provider"
+  bondedTimestamp: BigInt!
+  "Timestamp in which the first operator of this staking provider was bonded"
+  bondedTimestampFirstOperator: BigInt
+  "Timestamp in which the operator was confirmed"
+  confirmedTimestamp: BigInt
+  "Timestamp in which the first operator of this staking provider was confirmed"
+  confirmedTimestampFirstOperator: BigInt
+}
