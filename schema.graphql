@@ -108,8 +108,4 @@ type TACoOperator @entity {
   bondedTimestamp: BigInt!
   "Timestamp in which the first operator of this staking provider was bonded"
   bondedTimestampFirstOperator: BigInt
-  "Timestamp in which the operator was confirmed"
-  confirmedTimestamp: BigInt
-  "Timestamp in which the first operator of this staking provider was confirmed"
-  confirmedTimestampFirstOperator: BigInt
 }

@@ -73,14 +73,11 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - OperatorBonded
-        - OperatorConfirmed
+        - TACoOperator
       abis:
         - name: TACoApplication
           file: ./abis/TACoApplication.json
       eventHandlers:
         - event: OperatorBonded(indexed address,indexed address,indexed address,uint256)
           handler: handleOperatorBonded
-        - event: OperatorConfirmed(indexed address,indexed address)
-          handler: handleOperatorConfirmed
       file: ./src/taco-application.ts
