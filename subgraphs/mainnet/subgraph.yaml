@@ -1,6 +1,6 @@
 specVersion: 0.0.5
-description: Threshold Network staking data
-repository: https://github.com/threshold-network/staking-subgraph
+description: Threshold Network staking data mainnet
+repository: https://github.com/threshold-network/staking-subgraphs
 schema:
   file: ./schema.graphql
 dataSources:
