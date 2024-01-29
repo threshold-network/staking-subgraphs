@@ -1,0 +1,234 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "contract ITACoChildToRoot",
+        "name": "_rootApplication",
+        "type": "address"
+      },
+      {
+        "internalType": "uint96",
+        "name": "_minimumAuthorization",
+        "type": "uint96"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  { "inputs": [], "name": "InvalidInitialization", "type": "error" },
+  { "inputs": [], "name": "NotInitializing", "type": "error" },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "stakingProvider",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint96",
+        "name": "amount",
+        "type": "uint96"
+      }
+    ],
+    "name": "AuthorizationUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "version",
+        "type": "uint64"
+      }
+    ],
+    "name": "Initialized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "stakingProvider",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      }
+    ],
+    "name": "OperatorConfirmed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "stakingProvider",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      }
+    ],
+    "name": "OperatorUpdated",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_stakingProvider",
+        "type": "address"
+      }
+    ],
+    "name": "authorizedStake",
+    "outputs": [{ "internalType": "uint96", "name": "", "type": "uint96" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_operator", "type": "address" }
+    ],
+    "name": "confirmOperatorAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "coordinator",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_startIndex", "type": "uint256" },
+      {
+        "internalType": "uint256",
+        "name": "_maxStakingProviders",
+        "type": "uint256"
+      }
+    ],
+    "name": "getActiveStakingProviders",
+    "outputs": [
+      {
+        "internalType": "uint96",
+        "name": "allAuthorizedTokens",
+        "type": "uint96"
+      },
+      {
+        "internalType": "bytes32[]",
+        "name": "activeStakingProviders",
+        "type": "bytes32[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getStakingProvidersLength",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_coordinator", "type": "address" }
+    ],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "minimumAuthorization",
+    "outputs": [{ "internalType": "uint96", "name": "", "type": "uint96" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "operatorToStakingProvider",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "rootApplication",
+    "outputs": [
+      {
+        "internalType": "contract ITACoChildToRoot",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "stakingProviderInfo",
+    "outputs": [
+      { "internalType": "address", "name": "operator", "type": "address" },
+      { "internalType": "uint96", "name": "authorized", "type": "uint96" },
+      { "internalType": "bool", "name": "operatorConfirmed", "type": "bool" },
+      { "internalType": "uint248", "name": "index", "type": "uint248" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "stakingProviders",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "stakingProvider",
+        "type": "address"
+      },
+      { "internalType": "uint96", "name": "amount", "type": "uint96" }
+    ],
+    "name": "updateAuthorization",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "stakingProvider",
+        "type": "address"
+      },
+      { "internalType": "address", "name": "operator", "type": "address" }
+    ],
+    "name": "updateOperator",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

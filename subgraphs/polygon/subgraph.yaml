@@ -1,0 +1,28 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: TACoChildApplication
+    network: matic
+    source:
+      address: "0xFa07aaB78062Fac4C36995bF28F6D677667973F5"
+      abi: TACoChildApplication
+      startBlock: 50816169
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - TACoOperator
+      abis:
+        - name: TACoChildApplication
+          file: ./abis/TACoChildApplication.json
+      eventHandlers:
+        - event: OperatorConfirmed(indexed address,indexed address)
+          handler: handleOperatorConfirmed
+        - event: OperatorUpdated(indexed address,indexed address)
+          handler: handleOperatorUpdated
+      file: ./src/taco-child-application.ts
