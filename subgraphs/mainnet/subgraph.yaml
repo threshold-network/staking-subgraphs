@@ -1,4 +1,6 @@
 specVersion: 0.0.5
+description: Threshold Network staking data mainnet
+repository: https://github.com/threshold-network/staking-subgraphs
 schema:
   file: ./schema.graphql
 dataSources:
@@ -19,6 +21,7 @@ dataSources:
         - EpochStake
         - Epoch
         - EpochCounter
+        - AppAuthorization
         - MinStakeAmount
       abis:
         - name: TokenStaking
@@ -36,6 +39,14 @@ dataSources:
           handler: handleDelegateChanged
         - event: DelegateVotesChanged(indexed address,uint256,uint256)
           handler: handleDelegateVotesChanged
+        - event: AuthorizationIncreased(indexed address,indexed address,uint96,uint96)
+          handler: handleAuthorizationIncreased
+        - event: AuthorizationDecreaseApproved(indexed address,indexed address,uint96,uint96)
+          handler: handleAuthorizationDecreaseApproved
+        - event: AuthorizationDecreaseRequested(indexed address,indexed address,uint96,uint96)
+          handler: handleAuthorizationDecreaseRequested
+        - event: AuthorizationInvoluntaryDecreased(indexed address,indexed address,uint96,uint96,indexed bool)
+          handler: handleAuthorizationInvoluntaryDecreased
       file: ./src/staking.ts
   - kind: ethereum
     name: ThresholdToken
@@ -74,10 +85,13 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - TACoOperator
+        - TACoCommitment
       abis:
         - name: TACoApplication
           file: ./abis/TACoApplication.json
       eventHandlers:
         - event: OperatorBonded(indexed address,indexed address,indexed address,uint256)
           handler: handleOperatorBonded
+        - event: CommitmentMade(indexed address,uint256)
+          handler: handleCommitmentMade
       file: ./src/taco-application.ts

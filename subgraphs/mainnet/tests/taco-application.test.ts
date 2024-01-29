@@ -7,8 +7,14 @@ import {
   clearStore,
 } from "matchstick-as/assembly/index"
 import { Address, BigInt } from "@graphprotocol/graph-ts"
-import { createOperatorBondedEvent } from "./taco-application-utils"
-import { handleOperatorBonded } from "../src/taco-application"
+import {
+  createCommitmentMadeEvent,
+  createOperatorBondedEvent,
+} from "./taco-application-utils"
+import {
+  handleCommitmentMade,
+  handleOperatorBonded,
+} from "../src/taco-application"
 
 const firstStakingProviderAddr = "0x1111111111111111111111111111111111111111"
 const firstOperatorAddr = "0x2222222222222222222222222222222222222222"
@@ -117,5 +123,50 @@ describe("TACo operators", () => {
 
       assert.entityCount("TACoOperator", 2)
     })
+  })
+})
+
+describe("TACo commitments", () => {
+  beforeAll(() => {
+    const stakingProv = Address.fromString(firstStakingProviderAddr)
+    const endCommitment = BigInt.fromI32(firstBondedTimestamp)
+    const commitmentMadeEvent = createCommitmentMadeEvent(
+      stakingProv,
+      endCommitment
+    )
+    handleCommitmentMade(commitmentMadeEvent)
+  })
+
+  afterAll(() => {
+    clearStore()
+  })
+
+  test("a new TACo commitment is made", () => {
+    assert.entityCount("TACoCommitment", 1)
+    assert.fieldEquals(
+      "TACoCommitment",
+      firstStakingProviderAddr,
+      "endCommitment",
+      firstBondedTimestamp.toString()
+    )
+  })
+
+  test("a 2nd TACo commitment is made", () => {
+    const stakingProv = Address.fromString(
+      "0x2222222222222222222222222222222222222222"
+    )
+    const endCommitment = BigInt.fromI32(firstBondedTimestamp)
+    const commitmentMadeEvent = createCommitmentMadeEvent(
+      stakingProv,
+      endCommitment
+    )
+    handleCommitmentMade(commitmentMadeEvent)
+    assert.entityCount("TACoCommitment", 2)
+    assert.fieldEquals(
+      "TACoCommitment",
+      stakingProv.toHexString(),
+      "endCommitment",
+      firstBondedTimestamp.toString()
+    )
   })
 })

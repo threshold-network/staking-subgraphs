@@ -1,6 +1,9 @@
 import { Address } from "@graphprotocol/graph-ts"
-import { OperatorBonded as OperatorBondedEvent } from "../generated/TACoApplication/TACoApplication"
-import { TACoOperator } from "../generated/schema"
+import {
+  OperatorBonded as OperatorBondedEvent,
+  CommitmentMade as CommitmentMadeEvent,
+} from "../generated/TACoApplication/TACoApplication"
+import { TACoOperator, TACoCommitment } from "../generated/schema"
 
 function getOrCreateTACoOperator(stakingProvider: Address): TACoOperator {
   const tacoOperator = TACoOperator.load(stakingProvider.toHexString())
@@ -21,4 +24,12 @@ export function handleOperatorBonded(event: OperatorBondedEvent): void {
     tacoOperator.bondedTimestampFirstOperator = timestamp
   }
   tacoOperator.save()
+}
+
+export function handleCommitmentMade(event: CommitmentMadeEvent): void {
+  const tacoCommitment = new TACoCommitment(
+    event.params.stakingProvider.toHexString()
+  )
+  tacoCommitment.endCommitment = event.params.endCommitment
+  tacoCommitment.save()
 }

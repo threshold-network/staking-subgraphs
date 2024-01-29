@@ -1,0 +1,13 @@
+"TACoOperator represents the TACo operator's info of a staking provider"
+type TACoOperator @entity {
+  "ID is the staking provider address"
+  id: ID!
+  "Operator's address"
+  operator: Bytes!
+  "Timestamp in which the current operator was confirmed to the staking provider"
+  confirmedTimestamp: BigInt!
+  "Timestamp in which the first operator of this staking provider was confirmed"
+  confirmedTimestampFirstOperator: BigInt
+  "The operator won't be active when operator address update is in process"
+  active: Boolean
+}

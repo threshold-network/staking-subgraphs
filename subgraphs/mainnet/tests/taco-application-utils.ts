@@ -1,6 +1,9 @@
-import { newMockEvent, newMockEventWithParams } from "matchstick-as"
+import { newMockEvent } from "matchstick-as"
 import { ethereum, Address, BigInt } from "@graphprotocol/graph-ts"
-import { OperatorBonded } from "../generated/TACoApplication/TACoApplication"
+import {
+  CommitmentMade,
+  OperatorBonded,
+} from "../generated/TACoApplication/TACoApplication"
 
 export function createOperatorBondedEvent(
   stakingProvider: Address,
@@ -35,4 +38,27 @@ export function createOperatorBondedEvent(
   )
 
   return operatorBondedEvent
+}
+
+export function createCommitmentMadeEvent(
+  stakingProvider: Address,
+  endCommitment: BigInt
+): CommitmentMade {
+  const commitmentMadeEvent = changetype<CommitmentMade>(newMockEvent())
+
+  commitmentMadeEvent.parameters = []
+  commitmentMadeEvent.parameters.push(
+    new ethereum.EventParam(
+      "stakingProvider",
+      ethereum.Value.fromAddress(stakingProvider)
+    )
+  )
+  commitmentMadeEvent.parameters.push(
+    new ethereum.EventParam(
+      "endCommitment",
+      ethereum.Value.fromUnsignedBigInt(endCommitment)
+    )
+  )
+
+  return commitmentMadeEvent
 }
