@@ -62,7 +62,7 @@ describe("TACo operators", () => {
       assert.fieldEquals(
         "TACoOperator",
         firstStakingProviderAddr,
-        "active",
+        "confirmed",
         "true"
       )
     })
@@ -107,12 +107,12 @@ describe("TACo operators", () => {
       assert.fieldEquals(
         "TACoOperator",
         firstStakingProviderAddr,
-        "active",
+        "confirmed",
         "true"
       )
     })
 
-    test("operator is active when operatorConfirmed even after OperatorUpdated", () => {
+    test("operator is confirmed when operatorConfirmed even after OperatorUpdated", () => {
       const stakingProvider = Address.fromString(firstStakingProviderAddr)
       const operator = Address.fromString(
         "0x5555555555555555555555555555555555555555"
@@ -158,7 +158,7 @@ describe("TACo operators", () => {
       assert.fieldEquals(
         "TACoOperator",
         firstStakingProviderAddr,
-        "active",
+        "confirmed",
         "true"
       )
     })
@@ -217,7 +217,7 @@ describe("TACo operators", () => {
       clearStore()
     })
 
-    test("operator is inactive when OperatorUpdated event", () => {
+    test("operator is inconfirmed when OperatorUpdated event", () => {
       const stakingProvider = Address.fromString(firstStakingProviderAddr)
       const operator = Address.fromString(
         "0x2222222222222222222222222222222222222222"
@@ -263,7 +263,7 @@ describe("TACo operators", () => {
       assert.fieldEquals(
         "TACoOperator",
         firstStakingProviderAddr,
-        "active",
+        "confirmed",
         "false"
       )
     })

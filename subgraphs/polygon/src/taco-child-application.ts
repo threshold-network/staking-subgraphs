@@ -16,7 +16,7 @@ export function handleOperatorConfirmed(event: OperatorConfirmedEvent): void {
   }
   tacoOperator.operator = operator
   tacoOperator.confirmedTimestamp = timestamp
-  tacoOperator.active = true
+  tacoOperator.confirmed = true
   tacoOperator.save()
 }
 
@@ -25,7 +25,7 @@ export function handleOperatorUpdated(event: OperatorUpdatedEvent): void {
 
   const tacoOperator = TACoOperator.load(stakingProvider.toHexString())
   if (tacoOperator) {
-    tacoOperator.active = false
+    tacoOperator.confirmed = false
     tacoOperator.save()
   }
 }

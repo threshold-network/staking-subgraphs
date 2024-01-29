@@ -8,6 +8,6 @@ type TACoOperator @entity {
   confirmedTimestamp: BigInt!
   "Timestamp in which the first operator of this staking provider was confirmed"
   confirmedTimestampFirstOperator: BigInt
-  "The operator won't be active when operator address update is in process"
-  active: Boolean
+  "The operator won't be active during the operator address update process"
+  confirmed: Boolean
 }
