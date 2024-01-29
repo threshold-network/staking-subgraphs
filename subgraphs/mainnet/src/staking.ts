@@ -357,17 +357,57 @@ export function handleAuthorizationIncreased(
 export function handleAuthorizationDecreaseApproved(
   event: AuthorizationDecreaseApprovedEvent
 ): void {
-  const a = "a"
+  const stakingProvider = event.params.stakingProvider
+  const appAddress = event.params.application
+  const toAmount = event.params.toAmount
+
+  const id = `${stakingProvider.toHexString()}-${appAddress.toHexString()}`
+  const appAuthorization = AppAuthorization.load(id)
+
+  if (!appAuthorization) {
+    return
+  }
+
+  appAuthorization.amount = toAmount
+  appAuthorization.amountDeauthorizingTo = BigInt.zero()
+  appAuthorization.save()
 }
 
 export function handleAuthorizationDecreaseRequested(
   event: AuthorizationDecreaseRequestedEvent
 ): void {
-  const a = "a"
+  const stakingProvider = event.params.stakingProvider
+  const appAddress = event.params.application
+  const toAmount = event.params.toAmount
+
+  const id = `${stakingProvider.toHexString()}-${appAddress.toHexString()}`
+  const appAuthorization = AppAuthorization.load(id)
+
+  if (!appAuthorization) {
+    return
+  }
+
+  appAuthorization.amountDeauthorizingTo = toAmount
+  appAuthorization.save()
 }
 
 export function handleAuthorizationInvoluntaryDecreased(
   event: AuthorizationInvoluntaryDecreasedEvent
 ): void {
-  const a = "a"
+  const stakingProvider = event.params.stakingProvider
+  const appAddress = event.params.application
+  const toAmount = event.params.toAmount
+
+  const id = `${stakingProvider.toHexString()}-${appAddress.toHexString()}`
+  const appAuthorization = AppAuthorization.load(id)
+
+  if (!appAuthorization) {
+    return
+  }
+
+  appAuthorization.amount = toAmount
+  if (appAuthorization.amountDeauthorizingTo > appAuthorization.amount) {
+    appAuthorization.amountDeauthorizingTo = appAuthorization.amount
+  }
+  appAuthorization.save()
 }
