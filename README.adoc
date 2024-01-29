@@ -1,5 +1,3 @@
-:toc: macro
-
 = Threshold Network staking subgraph
 
 This repository contains Threshold Network staking subgraphs.
@@ -11,10 +9,12 @@ By the moment, there two different subgraphs have been developed:
 - mainnet: collects the data from contracts in Ethereum Mainnet.
 - mumbai: collects the data from contracts in Polygon Mumbai.
 
-toc::[]
 
-NOTE: Development query URL:
+Development query URL for Ethereum mainnet subgraph:
 https://api.studio.thegraph.com/query/24143/main-threshold-subgraph/0.0.7
+
+Development query URL for Polygon subgraph:
+https://api.studio.thegraph.com/query/24143/threshold-staking-polygon/0.1.0
 
 == Install, build and deploy subgraph
 
