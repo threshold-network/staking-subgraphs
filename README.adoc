@@ -1,16 +1,20 @@
-:toc: macro
-
 = Threshold Network staking subgraph
 
-This repository contains Threshold Network staking subgraph.
+This repository contains Threshold Network staking subgraphs.
 
 Subgraphs are open APIs to query data from networks like Ethereum and IPFS. The
 data is indexed by https://thegraph.com[*The Graph*] decentralized protocol.
 
-toc::[]
+By the moment, there two different subgraphs have been developed:
+- mainnet: collects the data from contracts in Ethereum Mainnet.
+- mumbai: collects the data from contracts in Polygon Mumbai.
 
-NOTE: Development query URL:
+
+Development query URL for Ethereum mainnet subgraph:
 https://api.studio.thegraph.com/query/24143/main-threshold-subgraph/0.0.7
+
+Development query URL for Polygon subgraph:
+https://api.studio.thegraph.com/query/24143/threshold-staking-polygon/0.1.0
 
 == Install, build and deploy subgraph
 
@@ -18,7 +22,7 @@ https://api.studio.thegraph.com/query/24143/main-threshold-subgraph/0.0.7
 
 Please make sure you have the following prerequisites installed on your machine:
 
-- https://nodejs.org[Node.js] >14.17.4 - https://yarnpkg.com[Yarn] >1.22.10
+- https://nodejs.org[Node.js] ^18.19.0 - https://yarnpkg.com[Yarn] ^1.22.21
 
 === Installation
 
@@ -28,9 +32,18 @@ The Graph CLI can be installed in your computer with npm or yarn:
 $ yarn global add @graphprotocol/graph-cli
 ```
 
-Once graph-cli is installed in your system, install this subgraph node package:
+Once graph-cli is installed in your system, install linting and formatting
+tools:
 
 ```
+$ yarn install
+```
+
+Now, you can navigate to the subgraph of your interest and install this subgraph
+dependencies:
+
+```
+$ cd subgraphs/mainnet/
 $ yarn install
 ```
 
@@ -39,6 +52,21 @@ $ yarn install
 ```
 $ graph codegen && graph build
 ```
+
+
+=== Run unit tests
+
+The recommended way to run tests is using a Docker container. It is required to
+have [Docker installed](https://docs.docker.com/desktop/).
+
+To run the tests, just execute:
+
+```
+$ yarn test
+```
+
+Tests can also be run in the local environment, more info in
+[Unit Testing Framework](https://thegraph.com/docs/en/developing/unit-testing-framework/).
 
 === Deploy subgraph
 

@@ -1,5 +1,5 @@
 {
-  "name": "threshold-staking-subgraph",
+  "name": "threshold-staking-subgraphs",
   "license": "GPL-3.0-or-later",
   "scripts": {
     "prepare": "husky install",
@@ -9,23 +9,13 @@
     "format": "yarn prettier --check",
     "format:fix": "yarn prettier --write",
     "lint:format": "yarn format . && yarn lint .",
-    "lint:format:fix": "yarn format:fix . && yarn lint:fix .",
-    "codegen": "graph codegen",
-    "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ threshold",
-    "create-local": "graph create --node http://localhost:8020/ threshold",
-    "remove-local": "graph remove --node http://localhost:8020/ threshold",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 threshold"
+    "lint:format:fix": "yarn format:fix . && yarn lint:fix ."
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
       "yarn lint",
       "yarn format"
     ]
-  },
-  "dependencies": {
-    "@graphprotocol/graph-cli": "0.67.2",
-    "@graphprotocol/graph-ts": "0.32.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "5.27.0",
