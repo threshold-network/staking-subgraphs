@@ -349,7 +349,7 @@ export function handleAuthorizationIncreased(
   appAuthorization.appAddress = appAddress
   appAuthorization.stake = stakingProvider.toHexString()
   appAuthorization.amount = toAmount
-  appAuthorization.amountDeauthorizingTo = BigInt.zero()
+  appAuthorization.amountDeauthorizing = BigInt.zero()
   appAuthorization.appName = appName
   appAuthorization.save()
 }
@@ -369,7 +369,7 @@ export function handleAuthorizationDecreaseApproved(
   }
 
   appAuthorization.amount = toAmount
-  appAuthorization.amountDeauthorizingTo = BigInt.zero()
+  appAuthorization.amountDeauthorizing = BigInt.zero()
   appAuthorization.save()
 }
 
@@ -379,6 +379,7 @@ export function handleAuthorizationDecreaseRequested(
   const stakingProvider = event.params.stakingProvider
   const appAddress = event.params.application
   const toAmount = event.params.toAmount
+  const fromAmount = event.params.fromAmount
 
   const id = `${stakingProvider.toHexString()}-${appAddress.toHexString()}`
   const appAuthorization = AppAuthorization.load(id)
@@ -387,7 +388,7 @@ export function handleAuthorizationDecreaseRequested(
     return
   }
 
-  appAuthorization.amountDeauthorizingTo = toAmount
+  appAuthorization.amountDeauthorizing = fromAmount.minus(toAmount)
   appAuthorization.save()
 }
 
@@ -406,8 +407,8 @@ export function handleAuthorizationInvoluntaryDecreased(
   }
 
   appAuthorization.amount = toAmount
-  if (appAuthorization.amountDeauthorizingTo > appAuthorization.amount) {
-    appAuthorization.amountDeauthorizingTo = appAuthorization.amount
+  if (appAuthorization.amountDeauthorizing > appAuthorization.amount) {
+    appAuthorization.amountDeauthorizing = appAuthorization.amount
   }
   appAuthorization.save()
 }
