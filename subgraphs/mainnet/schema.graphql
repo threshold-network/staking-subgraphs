@@ -66,8 +66,8 @@ type AppAuthorization @entity {
   stake: StakeData!
   "Amount of total T currently authorized to the application"
   amount: BigInt!
-  "Amount of T that will remain after the deauthorization process"
-  amountDeauthorizingTo: BigInt!
+  "Amount of T that is being deauthorized"
+  amountDeauthorizing: BigInt!
   "Application name (if known)"
   appName: String
 }

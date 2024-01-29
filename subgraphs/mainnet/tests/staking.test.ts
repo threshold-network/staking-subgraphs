@@ -64,7 +64,7 @@ describe("Application authorizations", () => {
       assert.fieldEquals(
         "AppAuthorization",
         id,
-        "amountDeauthorizingTo",
+        "amountDeauthorizing",
         testFromAmount.toString()
       )
       assert.fieldEquals("AppAuthorization", id, "appName", "TACo")
@@ -131,7 +131,7 @@ describe("Application authorizations", () => {
       assert.fieldEquals("AppAuthorization", id, "appAddress", tacoAppAddr)
       assert.fieldEquals("AppAuthorization", id, "stake", testStProvAddr)
       assert.fieldEquals("AppAuthorization", id, "amount", toAmount.toString())
-      assert.fieldEquals("AppAuthorization", id, "amountDeauthorizingTo", "0")
+      assert.fieldEquals("AppAuthorization", id, "amountDeauthorizing", "0")
       assert.fieldEquals("AppAuthorization", id, "appName", "TACo")
     })
   })
@@ -176,7 +176,7 @@ describe("Application authorizations", () => {
       assert.fieldEquals("AppAuthorization", id, "appAddress", tacoAppAddr)
       assert.fieldEquals("AppAuthorization", id, "stake", testStProvAddr)
       assert.fieldEquals("AppAuthorization", id, "amount", toAmount.toString())
-      assert.fieldEquals("AppAuthorization", id, "amountDeauthorizingTo", "0")
+      assert.fieldEquals("AppAuthorization", id, "amountDeauthorizing", "0")
       assert.fieldEquals("AppAuthorization", id, "appName", "TACo")
     })
   })
@@ -229,8 +229,8 @@ describe("Application authorizations", () => {
       assert.fieldEquals(
         "AppAuthorization",
         id,
-        "amountDeauthorizingTo",
-        toAmount.toString()
+        "amountDeauthorizing",
+        fromAmount.minus(toAmount).toString()
       )
       assert.fieldEquals("AppAuthorization", id, "appName", "TACo")
     })
@@ -278,11 +278,11 @@ describe("Application authorizations", () => {
       assert.fieldEquals("AppAuthorization", id, "appAddress", tacoAppAddr)
       assert.fieldEquals("AppAuthorization", id, "stake", testStProvAddr)
       assert.fieldEquals("AppAuthorization", id, "amount", toAmount.toString())
-      assert.fieldEquals("AppAuthorization", id, "amountDeauthorizingTo", "0")
+      assert.fieldEquals("AppAuthorization", id, "amountDeauthorizing", "0")
       assert.fieldEquals("AppAuthorization", id, "appName", "TACo")
     })
 
-    test("if there is a deauthorization requested, amountDeauthorizingTo is decreased accordingly", () => {
+    test("if there is a deauthorization requested, amountDeauthorizing is decreased accordingly", () => {
       const stakingProvider = Address.fromString(testStProvAddr)
       const tacoApp = Address.fromString(tacoAppAddr)
       const fromAmount = BigInt.fromI32(testToAmount)
@@ -326,7 +326,7 @@ describe("Application authorizations", () => {
       assert.fieldEquals(
         "AppAuthorization",
         id,
-        "amountDeauthorizingTo",
+        "amountDeauthorizing",
         toAmountInvoluntaryDecreased.toString(),
         "the deauthorizingTo amount must be set accordingly"
       )
