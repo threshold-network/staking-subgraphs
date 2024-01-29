@@ -58,7 +58,7 @@ type EpochCounter @entity {
 
 "AppAuthorizations represents the stake authorizations to Threshold apps"
 type AppAuthorization @entity {
-  "ID is <application address>-<staking provider address>"
+  "ID is <staking provider address>-<application address>"
   id: ID!
   "Application contract address"
   appAddress: Bytes!
@@ -70,6 +70,22 @@ type AppAuthorization @entity {
   amountDeauthorizingTo: BigInt!
   "Application name (if known)"
   appName: String
+}
+
+"AppAuthHistory stores each change in the stake's authorization of apps"
+type AppAuthHistory @entity(immutable: true) {
+  "IS is <staking provider address>-<application address>-<block number>"
+  id: ID!
+  "AppAuthorization of this update in the authorization"
+  appAuthorization: AppAuthorization!
+  "Amount of total T authorized by staking provider to the application in this block"
+  amount: BigInt!
+  "Type of event that caused this update"
+  eventType: String!
+  "Block in which this authorization update became effective"
+  blockNumber: BigInt!
+  "Timestamp in which this authorization update became effective"
+  timestamp: BigInt!
 }
 
 "MinStakeAmount represents the minimum amount of tokens to stake"
