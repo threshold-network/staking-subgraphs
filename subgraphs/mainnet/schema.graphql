@@ -22,6 +22,7 @@ type StakeData @entity {
   "Staked T token total amount (T + KEEP in T + Nu in T)"
   totalStaked: BigInt!
   delegatee: StakeDelegation
+  authorizations: [AppAuthorization!] @derivedFrom(field: "stake")
 }
 
 "EpochStake represents a single stake in a single epoch"
@@ -53,6 +54,22 @@ type EpochCounter @entity {
   "ID is 'epoch-counter' (singleton entity)"
   id: ID!
   count: Int!
+}
+
+"AppAuthorizations represents the stake authorizations to Threshold apps"
+type AppAuthorization @entity {
+  "ID is <application address>-<staking provider address>"
+  id: ID!
+  "Application contract address"
+  appAddress: Bytes!
+  "Stake data of the staking provider"
+  stake: StakeData!
+  "Amount of total T currently authorized to the application"
+  amount: BigInt!
+  "Amount of T that will remain after the deauthorization process"
+  amountDeauthorizingTo: BigInt!
+  "Application name (if known)"
+  appName: String
 }
 
 "MinStakeAmount represents the minimum amount of tokens to stake"

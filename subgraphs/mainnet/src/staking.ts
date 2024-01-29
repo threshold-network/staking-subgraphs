@@ -13,6 +13,10 @@ import {
   TokenStaking,
   DelegateVotesChanged,
   MinimumStakeAmountSet,
+  AuthorizationDecreaseApproved as AuthorizationDecreaseApprovedEvent,
+  AuthorizationDecreaseRequested as AuthorizationDecreaseRequestedEvent,
+  AuthorizationIncreased as AuthorizationIncreasedEvent,
+  AuthorizationInvoluntaryDecreased as AuthorizationInvoluntaryDecreasedEvent,
 } from "../generated/TokenStaking/TokenStaking"
 import {
   StakeData,
@@ -20,6 +24,7 @@ import {
   EpochStake,
   Account,
   MinStakeAmount,
+  AppAuthorization,
 } from "../generated/schema"
 import {
   getDaoMetric,
@@ -313,4 +318,96 @@ export function handleMinStakeAmountChanged(
   minStake.blockNumber = event.block.number
   minStake.updatedAt = event.block.timestamp
   minStake.save()
+}
+
+export function handleAuthorizationIncreased(
+  event: AuthorizationIncreasedEvent
+): void {
+  const tacoAddr = "0x347cc7ede7e5517bd47d20620b2cf1b406edcf07"
+  const tbtcAddr = "0x46d52e41c2f300bc82217ce22b920c34995204eb"
+  const randomBeaconAddr = "0x5499f54b4a1cb4816eefcf78962040461be3d80b"
+
+  const stakingProvider = event.params.stakingProvider
+  const appAddress = event.params.application
+  const toAmount = event.params.toAmount
+
+  const id = `${stakingProvider.toHexString()}-${appAddress.toHexString()}`
+  let appAuthorization = AppAuthorization.load(id)
+  if (!appAuthorization) {
+    appAuthorization = new AppAuthorization(id)
+  }
+
+  let appName = ""
+  if (appAddress.equals(ByteArray.fromHexString(tacoAddr))) {
+    appName = "TACo"
+  } else if (appAddress.equals(ByteArray.fromHexString(tbtcAddr))) {
+    appName = "tBTC"
+  } else if (appAddress.equals(ByteArray.fromHexString(randomBeaconAddr))) {
+    appName = "Random Beacon"
+  }
+
+  appAuthorization.appAddress = appAddress
+  appAuthorization.stake = stakingProvider.toHexString()
+  appAuthorization.amount = toAmount
+  appAuthorization.amountDeauthorizingTo = BigInt.zero()
+  appAuthorization.appName = appName
+  appAuthorization.save()
+}
+
+export function handleAuthorizationDecreaseApproved(
+  event: AuthorizationDecreaseApprovedEvent
+): void {
+  const stakingProvider = event.params.stakingProvider
+  const appAddress = event.params.application
+  const toAmount = event.params.toAmount
+
+  const id = `${stakingProvider.toHexString()}-${appAddress.toHexString()}`
+  const appAuthorization = AppAuthorization.load(id)
+
+  if (!appAuthorization) {
+    return
+  }
+
+  appAuthorization.amount = toAmount
+  appAuthorization.amountDeauthorizingTo = BigInt.zero()
+  appAuthorization.save()
+}
+
+export function handleAuthorizationDecreaseRequested(
+  event: AuthorizationDecreaseRequestedEvent
+): void {
+  const stakingProvider = event.params.stakingProvider
+  const appAddress = event.params.application
+  const toAmount = event.params.toAmount
+
+  const id = `${stakingProvider.toHexString()}-${appAddress.toHexString()}`
+  const appAuthorization = AppAuthorization.load(id)
+
+  if (!appAuthorization) {
+    return
+  }
+
+  appAuthorization.amountDeauthorizingTo = toAmount
+  appAuthorization.save()
+}
+
+export function handleAuthorizationInvoluntaryDecreased(
+  event: AuthorizationInvoluntaryDecreasedEvent
+): void {
+  const stakingProvider = event.params.stakingProvider
+  const appAddress = event.params.application
+  const toAmount = event.params.toAmount
+
+  const id = `${stakingProvider.toHexString()}-${appAddress.toHexString()}`
+  const appAuthorization = AppAuthorization.load(id)
+
+  if (!appAuthorization) {
+    return
+  }
+
+  appAuthorization.amount = toAmount
+  if (appAuthorization.amountDeauthorizingTo > appAuthorization.amount) {
+    appAuthorization.amountDeauthorizingTo = appAuthorization.amount
+  }
+  appAuthorization.save()
 }
