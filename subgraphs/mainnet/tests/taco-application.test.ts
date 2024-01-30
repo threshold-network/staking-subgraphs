@@ -127,35 +127,42 @@ describe("TACo operators", () => {
 })
 
 describe("TACo commitments", () => {
-  beforeAll(() => {
-    const stakingProv = Address.fromString(firstStakingProviderAddr)
-    const endCommitment = BigInt.fromI32(firstBondedTimestamp)
+  afterAll(() => {
+    clearStore()
+  })
+
+  test("a new TACo commitment is made for 3 months", () => {
+    const stakingProv = Address.fromString(
+      "0x1111111111111111111111111111111111111111"
+    )
+    // timestamp of the events mocked is "1"
+    const endCommitment = BigInt.fromI32(7862400 + 1)
     const commitmentMadeEvent = createCommitmentMadeEvent(
       stakingProv,
       endCommitment
     )
     handleCommitmentMade(commitmentMadeEvent)
-  })
-
-  afterAll(() => {
-    clearStore()
-  })
-
-  test("a new TACo commitment is made", () => {
     assert.entityCount("TACoCommitment", 1)
     assert.fieldEquals(
       "TACoCommitment",
-      firstStakingProviderAddr,
+      stakingProv.toHexString(),
       "endCommitment",
-      firstBondedTimestamp.toString()
+      endCommitment.toString()
+    )
+    assert.fieldEquals(
+      "TACoCommitment",
+      stakingProv.toHexString(),
+      "duration",
+      "3"
     )
   })
 
-  test("a 2nd TACo commitment is made", () => {
+  test("a new TACo commitment is made for 6 months", () => {
     const stakingProv = Address.fromString(
       "0x2222222222222222222222222222222222222222"
     )
-    const endCommitment = BigInt.fromI32(firstBondedTimestamp)
+    // timestamp of the events mocked is "1"
+    const endCommitment = BigInt.fromI32(15724800 + 1)
     const commitmentMadeEvent = createCommitmentMadeEvent(
       stakingProv,
       endCommitment
@@ -166,7 +173,65 @@ describe("TACo commitments", () => {
       "TACoCommitment",
       stakingProv.toHexString(),
       "endCommitment",
-      firstBondedTimestamp.toString()
+      endCommitment.toString()
+    )
+    assert.fieldEquals(
+      "TACoCommitment",
+      stakingProv.toHexString(),
+      "duration",
+      "6"
+    )
+  })
+
+  test("a new TACo commitment is made for 12 months", () => {
+    const stakingProv = Address.fromString(
+      "0x3333333333333333333333333333333333333333"
+    )
+    // timestamp of the events mocked is "1"
+    const endCommitment = BigInt.fromI32(31449600 + 1)
+    const commitmentMadeEvent = createCommitmentMadeEvent(
+      stakingProv,
+      endCommitment
+    )
+    handleCommitmentMade(commitmentMadeEvent)
+    assert.entityCount("TACoCommitment", 3)
+    assert.fieldEquals(
+      "TACoCommitment",
+      stakingProv.toHexString(),
+      "endCommitment",
+      endCommitment.toString()
+    )
+    assert.fieldEquals(
+      "TACoCommitment",
+      stakingProv.toHexString(),
+      "duration",
+      "12"
+    )
+  })
+
+  test("a new TACo commitment is made for 18 months", () => {
+    const stakingProv = Address.fromString(
+      "0x4444444444444444444444444444444444444444"
+    )
+    // timestamp of the events mocked is "1"
+    const endCommitment = BigInt.fromI32(47174400 + 1)
+    const commitmentMadeEvent = createCommitmentMadeEvent(
+      stakingProv,
+      endCommitment
+    )
+    handleCommitmentMade(commitmentMadeEvent)
+    assert.entityCount("TACoCommitment", 4)
+    assert.fieldEquals(
+      "TACoCommitment",
+      stakingProv.toHexString(),
+      "endCommitment",
+      endCommitment.toString()
+    )
+    assert.fieldEquals(
+      "TACoCommitment",
+      stakingProv.toHexString(),
+      "duration",
+      "18"
     )
   })
 })
