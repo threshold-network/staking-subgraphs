@@ -27,9 +27,30 @@ export function handleOperatorBonded(event: OperatorBondedEvent): void {
 }
 
 export function handleCommitmentMade(event: CommitmentMadeEvent): void {
+  const commitment3Months = 7862400
+  const commitment6Months = 15724800
+  const commitment12Months = 31449600
+  const commitment18Months = 47174400
+
+  const endCommitment = event.params.endCommitment
+  const eventTimestamp = event.block.timestamp
+  const durationInSeconds = endCommitment.minus(eventTimestamp).toI32()
+
+  let duration = 0
+  if (durationInSeconds >= commitment18Months) {
+    duration = 18
+  } else if (durationInSeconds >= commitment12Months) {
+    duration = 12
+  } else if (durationInSeconds >= commitment6Months) {
+    duration = 6
+  } else if (durationInSeconds >= commitment3Months) {
+    duration = 3
+  }
+
   const tacoCommitment = new TACoCommitment(
     event.params.stakingProvider.toHexString()
   )
-  tacoCommitment.endCommitment = event.params.endCommitment
+  tacoCommitment.endCommitment = endCommitment
+  tacoCommitment.duration = duration
   tacoCommitment.save()
 }

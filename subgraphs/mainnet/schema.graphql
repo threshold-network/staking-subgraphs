@@ -149,4 +149,6 @@ type TACoCommitment @entity(immutable: true) {
   id: ID!
   "Timestamp of the end of the lock-up"
   endCommitment: BigInt!
+  "Selected duration in month of the lock-up"
+  duration: Int!
 }
