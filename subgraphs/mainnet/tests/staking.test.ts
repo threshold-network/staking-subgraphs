@@ -334,3 +334,107 @@ describe("Application authorizations", () => {
     })
   })
 })
+
+describe("Application authorization history", () => {
+  afterAll(() => {
+    clearStore()
+  })
+
+  test("a new AppAuthHistory is created with AuthorizationIncreased event", () => {
+    const stakingProvider = Address.fromString(testStProvAddr)
+    const tacoApp = Address.fromString(tacoAppAddr)
+    const fromAmount = BigInt.fromI32(100)
+    const toAmount = BigInt.fromI32(500)
+
+    const authorizationIncreasedEvent = createAuthorizationIncreasedEvent(
+      stakingProvider,
+      tacoApp,
+      fromAmount,
+      toAmount
+    )
+    handleAuthorizationIncreased(authorizationIncreasedEvent)
+
+    const id =
+      stakingProvider.toHexString() + "-" + tacoApp.toHexString() + "-1"
+    assert.entityCount("AppAuthHistory", 1)
+    assert.fieldEquals(
+      "AppAuthHistory",
+      id,
+      "appAuthorization",
+      stakingProvider.toHexString() + "-" + tacoApp.toHexString()
+    )
+    assert.fieldEquals("AppAuthHistory", id, "amount", toAmount.toString())
+    assert.fieldEquals(
+      "AppAuthHistory",
+      id,
+      "eventType",
+      "AuthorizationIncreased"
+    )
+  })
+
+  test("a new AppAuthHistory is created with AuthorizationDecreaseApproved event", () => {
+    const stakingProvider = Address.fromString(testStProvAddr)
+    const tacoApp = Address.fromString(tacoAppAddr)
+    const fromAmount = BigInt.fromI32(500)
+    const toAmount = BigInt.fromI32(100)
+
+    const authorizationDecreaseApprovedEvent =
+      createAuthorizationDecreaseApprovedEvent(
+        stakingProvider,
+        tacoApp,
+        fromAmount,
+        toAmount
+      )
+    handleAuthorizationDecreaseApproved(authorizationDecreaseApprovedEvent)
+
+    const id =
+      stakingProvider.toHexString() + "-" + tacoApp.toHexString() + "-1"
+    assert.fieldEquals(
+      "AppAuthHistory",
+      id,
+      "appAuthorization",
+      stakingProvider.toHexString() + "-" + tacoApp.toHexString()
+    )
+    assert.fieldEquals("AppAuthHistory", id, "amount", toAmount.toString())
+    assert.fieldEquals(
+      "AppAuthHistory",
+      id,
+      "eventType",
+      "AuthorizationDecreaseApproved"
+    )
+  })
+
+  test("a new AppAuthHistory is created with AuthorizationInvoluntaryDecreased event", () => {
+    const stakingProvider = Address.fromString(testStProvAddr)
+    const tacoApp = Address.fromString(tacoAppAddr)
+    const fromAmount = BigInt.fromI32(500)
+    const toAmount = BigInt.fromI32(100)
+
+    const authorizationInvoluntaryDecreasedEvent =
+      createAuthorizationInvoluntaryDecreasedEvent(
+        stakingProvider,
+        tacoApp,
+        fromAmount,
+        toAmount
+      )
+    handleAuthorizationInvoluntaryDecreased(
+      authorizationInvoluntaryDecreasedEvent
+    )
+
+    const id =
+      stakingProvider.toHexString() + "-" + tacoApp.toHexString() + "-1"
+    assert.fieldEquals(
+      "AppAuthHistory",
+      id,
+      "appAuthorization",
+      stakingProvider.toHexString() + "-" + tacoApp.toHexString()
+    )
+    assert.fieldEquals("AppAuthHistory", id, "amount", toAmount.toString())
+    assert.fieldEquals(
+      "AppAuthHistory",
+      id,
+      "eventType",
+      "AuthorizationInvoluntaryDecreased"
+    )
+  })
+})

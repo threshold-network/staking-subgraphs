@@ -25,6 +25,7 @@ import {
   Account,
   MinStakeAmount,
   AppAuthorization,
+  AppAuthHistory,
 } from "../generated/schema"
 import {
   getDaoMetric,
@@ -331,10 +332,10 @@ export function handleAuthorizationIncreased(
   const appAddress = event.params.application
   const toAmount = event.params.toAmount
 
-  const id = `${stakingProvider.toHexString()}-${appAddress.toHexString()}`
-  let appAuthorization = AppAuthorization.load(id)
+  const appAuthId = `${stakingProvider.toHexString()}-${appAddress.toHexString()}`
+  let appAuthorization = AppAuthorization.load(appAuthId)
   if (!appAuthorization) {
-    appAuthorization = new AppAuthorization(id)
+    appAuthorization = new AppAuthorization(appAuthId)
   }
 
   let appName = ""
@@ -352,6 +353,20 @@ export function handleAuthorizationIncreased(
   appAuthorization.amountDeauthorizing = BigInt.zero()
   appAuthorization.appName = appName
   appAuthorization.save()
+
+  const appAuthHistoryId =
+    stakingProvider.toHexString() +
+    "-" +
+    appAddress.toHexString() +
+    "-" +
+    event.block.number.toString()
+  const appAuthHistory = new AppAuthHistory(appAuthHistoryId)
+  appAuthHistory.appAuthorization = appAuthId
+  appAuthHistory.amount = toAmount
+  appAuthHistory.eventType = "AuthorizationIncreased"
+  appAuthHistory.blockNumber = event.block.number
+  appAuthHistory.timestamp = event.block.timestamp
+  appAuthHistory.save()
 }
 
 export function handleAuthorizationDecreaseApproved(
@@ -361,8 +376,8 @@ export function handleAuthorizationDecreaseApproved(
   const appAddress = event.params.application
   const toAmount = event.params.toAmount
 
-  const id = `${stakingProvider.toHexString()}-${appAddress.toHexString()}`
-  const appAuthorization = AppAuthorization.load(id)
+  const appAuthId = `${stakingProvider.toHexString()}-${appAddress.toHexString()}`
+  const appAuthorization = AppAuthorization.load(appAuthId)
 
   if (!appAuthorization) {
     return
@@ -371,6 +386,20 @@ export function handleAuthorizationDecreaseApproved(
   appAuthorization.amount = toAmount
   appAuthorization.amountDeauthorizing = BigInt.zero()
   appAuthorization.save()
+
+  const appAuthHistoryId =
+    stakingProvider.toHexString() +
+    "-" +
+    appAddress.toHexString() +
+    "-" +
+    event.block.number.toString()
+  const appAuthHistory = new AppAuthHistory(appAuthHistoryId)
+  appAuthHistory.appAuthorization = appAuthId
+  appAuthHistory.amount = toAmount
+  appAuthHistory.eventType = "AuthorizationDecreaseApproved"
+  appAuthHistory.blockNumber = event.block.number
+  appAuthHistory.timestamp = event.block.timestamp
+  appAuthHistory.save()
 }
 
 export function handleAuthorizationDecreaseRequested(
@@ -399,8 +428,8 @@ export function handleAuthorizationInvoluntaryDecreased(
   const appAddress = event.params.application
   const toAmount = event.params.toAmount
 
-  const id = `${stakingProvider.toHexString()}-${appAddress.toHexString()}`
-  const appAuthorization = AppAuthorization.load(id)
+  const appAuthId = `${stakingProvider.toHexString()}-${appAddress.toHexString()}`
+  const appAuthorization = AppAuthorization.load(appAuthId)
 
   if (!appAuthorization) {
     return
@@ -411,4 +440,18 @@ export function handleAuthorizationInvoluntaryDecreased(
     appAuthorization.amountDeauthorizing = appAuthorization.amount
   }
   appAuthorization.save()
+
+  const appAuthHistoryId =
+    stakingProvider.toHexString() +
+    "-" +
+    appAddress.toHexString() +
+    "-" +
+    event.block.number.toString()
+  const appAuthHistory = new AppAuthHistory(appAuthHistoryId)
+  appAuthHistory.appAuthorization = appAuthId
+  appAuthHistory.amount = toAmount
+  appAuthHistory.eventType = "AuthorizationInvoluntaryDecreased"
+  appAuthHistory.blockNumber = event.block.number
+  appAuthHistory.timestamp = event.block.timestamp
+  appAuthHistory.save()
 }
