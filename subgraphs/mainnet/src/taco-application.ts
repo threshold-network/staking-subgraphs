@@ -37,13 +37,13 @@ export function handleCommitmentMade(event: CommitmentMadeEvent): void {
   const durationInSeconds = endCommitment.minus(eventTimestamp).toI32()
 
   let duration = 0
-  if (durationInSeconds >= commitment18Months) {
+  if (durationInSeconds === commitment18Months) {
     duration = 18
-  } else if (durationInSeconds >= commitment12Months) {
+  } else if (durationInSeconds === commitment12Months) {
     duration = 12
-  } else if (durationInSeconds >= commitment6Months) {
+  } else if (durationInSeconds === commitment6Months) {
     duration = 6
-  } else if (durationInSeconds >= commitment3Months) {
+  } else if (durationInSeconds === commitment3Months) {
     duration = 3
   }
 
