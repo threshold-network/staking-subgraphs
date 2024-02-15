@@ -16,6 +16,9 @@ https://api.studio.thegraph.com/query/24143/main-threshold-subgraph/0.0.7
 Development query URL for Polygon subgraph:
 https://api.studio.thegraph.com/query/24143/threshold-staking-polygon/0.1.0
 
+Development query URL for Simple PRE Application:
+https://api.studio.thegraph.com/query/24143/simple-pre-application/version/latest
+
 == Install, build and deploy subgraph
 
 === Prerequisites
