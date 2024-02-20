@@ -1,11 +1,102 @@
 import { newMockEvent } from "matchstick-as"
 import {
+  Staked,
+  ToppedUp,
+  Unstaked,
   AuthorizationIncreased,
   AuthorizationDecreaseApproved,
   AuthorizationDecreaseRequested,
   AuthorizationInvoluntaryDecreased,
 } from "../generated/TokenStaking/TokenStaking"
 import { ethereum, Address, BigInt } from "@graphprotocol/graph-ts"
+
+export function createStakedEvent(
+  stakeType: i32,
+  owner: Address,
+  stakingProvider: Address,
+  beneficiary: Address,
+  authorizer: Address,
+  amount: BigInt
+): Staked {
+  const stakedEvent = changetype<Staked>(newMockEvent())
+
+  stakedEvent.parameters = []
+
+  stakedEvent.parameters.push(
+    new ethereum.EventParam(
+      "stakeType",
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(stakeType))
+    )
+  )
+  stakedEvent.parameters.push(
+    new ethereum.EventParam("owner", ethereum.Value.fromAddress(owner))
+  )
+  stakedEvent.parameters.push(
+    new ethereum.EventParam(
+      "stakingProvider",
+      ethereum.Value.fromAddress(stakingProvider)
+    )
+  )
+  stakedEvent.parameters.push(
+    new ethereum.EventParam(
+      "beneficiary",
+      ethereum.Value.fromAddress(beneficiary)
+    )
+  )
+  stakedEvent.parameters.push(
+    new ethereum.EventParam(
+      "authorizer",
+      ethereum.Value.fromAddress(authorizer)
+    )
+  )
+  stakedEvent.parameters.push(
+    new ethereum.EventParam("amount", ethereum.Value.fromUnsignedBigInt(amount))
+  )
+
+  return stakedEvent
+}
+
+export function createToppedUpEvent(
+  stakingProvider: Address,
+  amount: BigInt
+): ToppedUp {
+  const toppedUpEvent = changetype<ToppedUp>(newMockEvent())
+
+  toppedUpEvent.parameters = []
+
+  toppedUpEvent.parameters.push(
+    new ethereum.EventParam(
+      "stakingProvider",
+      ethereum.Value.fromAddress(stakingProvider)
+    )
+  )
+  toppedUpEvent.parameters.push(
+    new ethereum.EventParam("amount", ethereum.Value.fromUnsignedBigInt(amount))
+  )
+
+  return toppedUpEvent
+}
+
+export function createUnstakedEvent(
+  stakingProvider: Address,
+  amount: BigInt
+): Unstaked {
+  const unstakedEvent = changetype<Unstaked>(newMockEvent())
+
+  unstakedEvent.parameters = []
+
+  unstakedEvent.parameters.push(
+    new ethereum.EventParam(
+      "stakingProvider",
+      ethereum.Value.fromAddress(stakingProvider)
+    )
+  )
+  unstakedEvent.parameters.push(
+    new ethereum.EventParam("amount", ethereum.Value.fromUnsignedBigInt(amount))
+  )
+
+  return unstakedEvent
+}
 
 export function createAuthorizationIncreasedEvent(
   stakingProvider: Address,

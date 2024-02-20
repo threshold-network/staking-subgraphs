@@ -1,16 +1,9 @@
+import { ByteArray, BigInt, log } from "@graphprotocol/graph-ts"
 import {
-  crypto,
-  ByteArray,
-  BigInt,
-  log,
-  Address,
-} from "@graphprotocol/graph-ts"
-import {
-  Staked,
-  ToppedUp,
-  Unstaked,
+  Staked as StakedEvent,
+  ToppedUp as ToppedUpEvent,
+  Unstaked as UnstakedEvent,
   DelegateChanged,
-  TokenStaking,
   DelegateVotesChanged,
   MinimumStakeAmountSet,
   AuthorizationDecreaseApproved as AuthorizationDecreaseApprovedEvent,
@@ -20,8 +13,6 @@ import {
 } from "../generated/TokenStaking/TokenStaking"
 import {
   StakeData,
-  Epoch,
-  EpochStake,
   Account,
   MinStakeAmount,
   AppAuthorization,
@@ -29,32 +20,15 @@ import {
 } from "../generated/schema"
 import {
   getDaoMetric,
-  getEpochCount,
-  getEpochStakeId,
-  populateNewEpochStakes,
-  getOrCreateLastEpoch,
-  increaseEpochCount,
   getOrCreateStakeDelegation,
   getOrCreateTokenholderDelegation,
 } from "./utils"
 
-export function handleStaked(event: Staked): void {
+export function handleStaked(event: StakedEvent): void {
   const stakingProvider = event.params.stakingProvider
-  const amount = event.params.amount
+  const owner = event.params.owner
 
   const stakeData = new StakeData(stakingProvider.toHexString())
-  let type: string
-  switch (event.params.stakeType) {
-    case 0:
-      type = "NU"
-      break
-    case 1:
-      type = "KEEP"
-      break
-    default:
-      type = "T"
-  }
-  const owner = event.params.owner
   let account = Account.load(owner.toHexString())
   if (!account) {
     account = new Account(owner.toHexString())
@@ -64,212 +38,36 @@ export function handleStaked(event: Staked): void {
   stakeData.owner = account.id
   stakeData.beneficiary = event.params.beneficiary
   stakeData.authorizer = event.params.authorizer
-  stakeData.tStake = type === "T" ? amount : BigInt.zero()
-  stakeData.keepInTStake = type === "KEEP" ? amount : BigInt.zero()
-  stakeData.nuInTStake = type === "NU" ? amount : BigInt.zero()
-  stakeData.totalStaked = stakeData.tStake
-    .plus(stakeData.keepInTStake)
-    .plus(stakeData.nuInTStake)
+  stakeData.stakedAmount = event.params.amount
   stakeData.save()
-
-  const timestamp = event.block.timestamp
-  const lastEpoch = getOrCreateLastEpoch()
-  lastEpoch.duration = timestamp.minus(lastEpoch.timestamp)
-  lastEpoch.save()
-
-  const epochId = getEpochCount().toString()
-
-  let epochStakes: string[] = []
-  if (lastEpoch.stakes) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    epochStakes = populateNewEpochStakes(lastEpoch.stakes!)
-  }
-  const epochStakeId = getEpochStakeId(stakingProvider)
-  const epochStake = new EpochStake(epochStakeId)
-  epochStake.epoch = epochId
-  epochStake.stakingProvider = stakingProvider
-  epochStake.owner = owner
-  epochStake.amount = amount
-  epochStake.save()
-  epochStakes.push(epochStake.id)
-
-  const epoch = new Epoch(epochId)
-  epoch.timestamp = timestamp
-  epoch.totalAmount = lastEpoch.totalAmount.plus(amount)
-  epoch.stakes = epochStakes
-  epoch.save()
-
-  increaseEpochCount()
 }
 
-export function handleToppedUp(event: ToppedUp): void {
+export function handleToppedUp(event: ToppedUpEvent): void {
   const stakingProvider = event.params.stakingProvider
-  const amount = event.params.amount
-
-  const topUpFunctionId = ByteArray.fromHexString(
-    event.transaction.input.toHexString().substring(0, 10)
-  )
-
-  const topUpTFunctionId = ByteArray.fromHexString(
-    crypto
-      .keccak256(ByteArray.fromUTF8("topUp(address,uint96)"))
-      .toHexString()
-      .substring(0, 10)
-  )
-  const topUpKeepFunctionId = ByteArray.fromHexString(
-    crypto
-      .keccak256(ByteArray.fromUTF8("topUpKeep(address)"))
-      .toHexString()
-      .substring(0, 10)
-  )
-  const topUpNuFunctionId = ByteArray.fromHexString(
-    crypto
-      .keccak256(ByteArray.fromUTF8("topUpNu(address)"))
-      .toHexString()
-      .substring(0, 10)
-  )
-
-  const stakeData = StakeData.load(stakingProvider.toHexString()) as StakeData
-  stakeData.totalStaked = stakeData.totalStaked.plus(amount)
-
-  if (topUpFunctionId.equals(topUpTFunctionId)) {
-    stakeData.tStake = stakeData.tStake.plus(amount)
-  } else if (topUpFunctionId.equals(topUpKeepFunctionId)) {
-    stakeData.keepInTStake = stakeData.keepInTStake.plus(amount)
-  } else if (topUpFunctionId.equals(topUpNuFunctionId)) {
-    stakeData.nuInTStake = stakeData.nuInTStake.plus(amount)
-  } else {
-    log.info(
-      "Could not match the top up function identifier with event input data. Fetching the current stake balance for {} staking provider from chain.",
-      [stakingProvider.toHexString()]
+  const stakeData = StakeData.load(stakingProvider.toHexString())
+  if (!stakeData) {
+    log.warning(
+      "Couldn't find the stakeData entity related to staking prov {} in tx {}",
+      [stakingProvider.toHexString(), event.transaction.hash.toHexString()]
     )
-    const stakes = TokenStaking.bind(event.address).stakes(stakingProvider)
-    stakeData.tStake = stakes.value0
-    stakeData.keepInTStake = stakes.value1
-    stakeData.nuInTStake = stakes.value2
+    return
   }
+  stakeData.stakedAmount = stakeData.stakedAmount.plus(event.params.amount)
   stakeData.save()
-
-  const timestamp = event.block.timestamp
-  const lastEpoch = getOrCreateLastEpoch()
-  lastEpoch.duration = timestamp.minus(lastEpoch.timestamp)
-  lastEpoch.save()
-
-  let epochStakes: string[] = []
-  if (lastEpoch.stakes) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    epochStakes = populateNewEpochStakes(lastEpoch.stakes!)
-  }
-
-  const epochId = getEpochCount().toString()
-
-  const epochStakeId = getEpochStakeId(stakingProvider)
-  let epochStake = EpochStake.load(epochStakeId)
-  if (!epochStake) {
-    epochStake = new EpochStake(epochStakeId)
-    epochStake.epoch = epochId
-    epochStake.stakingProvider = stakingProvider
-    epochStake.owner = Address.fromHexString(stakeData.owner)
-    epochStake.amount = BigInt.zero()
-    epochStakes.push(epochStake.id)
-  }
-  epochStake.amount = epochStake.amount.plus(amount)
-  epochStake.save()
-
-  const epoch = new Epoch(epochId)
-  epoch.timestamp = timestamp
-  epoch.totalAmount = lastEpoch.totalAmount.plus(amount)
-  epoch.stakes = epochStakes
-  epoch.save()
-
-  increaseEpochCount()
 }
 
-export function handleUnstaked(event: Unstaked): void {
+export function handleUnstaked(event: UnstakedEvent): void {
   const stakingProvider = event.params.stakingProvider
-  const amount = event.params.amount
-
-  const unstakeFunctionId = ByteArray.fromHexString(
-    event.transaction.input.toHexString().substring(0, 10)
-  )
-
-  const unstakeTFunctionId = ByteArray.fromHexString(
-    crypto
-      .keccak256(ByteArray.fromUTF8("unstakeT(address,uint96)"))
-      .toHexString()
-      .substring(0, 10)
-  )
-  const unstakeKeepFunctionId = ByteArray.fromHexString(
-    crypto
-      .keccak256(ByteArray.fromUTF8("unstakeKeep(address)"))
-      .toHexString()
-      .substring(0, 10)
-  )
-  const unstakeNuFunctionId = ByteArray.fromHexString(
-    crypto
-      .keccak256(ByteArray.fromUTF8("unstakeNu(address,uint96)"))
-      .toHexString()
-      .substring(0, 10)
-  )
-  const unstakeAllFunctionId = ByteArray.fromHexString(
-    crypto
-      .keccak256(ByteArray.fromUTF8("unstakeAll(address)"))
-      .toHexString()
-      .substring(0, 10)
-  )
-
-  const stakeData = StakeData.load(stakingProvider.toHexString()) as StakeData
-  stakeData.totalStaked = stakeData.totalStaked.minus(amount)
-
-  if (unstakeFunctionId.equals(unstakeTFunctionId)) {
-    stakeData.tStake = stakeData.tStake.minus(amount)
-  } else if (unstakeFunctionId.equals(unstakeKeepFunctionId)) {
-    stakeData.keepInTStake = stakeData.keepInTStake.minus(amount)
-  } else if (unstakeFunctionId.equals(unstakeNuFunctionId)) {
-    stakeData.nuInTStake = stakeData.nuInTStake.minus(amount)
-  } else if (unstakeFunctionId.equals(unstakeAllFunctionId)) {
-    stakeData.tStake = BigInt.zero()
-    stakeData.keepInTStake = BigInt.zero()
-    stakeData.nuInTStake = BigInt.zero()
-  } else {
-    log.info(
-      "Could not match the unstake function identifier with event input data. Fetching the current stake balance for {} staking provider from chain.",
-      [stakingProvider.toHexString()]
+  const stakeData = StakeData.load(stakingProvider.toHexString())
+  if (!stakeData) {
+    log.warning(
+      "Couldn't find the stakeData entity related to staking prov {} in tx {}",
+      [stakingProvider.toHexString(), event.transaction.hash.toHexString()]
     )
-    const stakes = TokenStaking.bind(event.address).stakes(stakingProvider)
-    stakeData.tStake = stakes.value0
-    stakeData.keepInTStake = stakes.value1
-    stakeData.nuInTStake = stakes.value2
+    return
   }
+  stakeData.stakedAmount = stakeData.stakedAmount.minus(event.params.amount)
   stakeData.save()
-
-  const timestamp = event.block.timestamp
-  const lastEpoch = getOrCreateLastEpoch()
-  lastEpoch.duration = timestamp.minus(lastEpoch.timestamp)
-  lastEpoch.save()
-
-  let epochStakes: string[] = []
-  if (lastEpoch.stakes) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    epochStakes = populateNewEpochStakes(lastEpoch.stakes!)
-  }
-  const epochStakeId = getEpochStakeId(stakingProvider)
-  const epochStake = EpochStake.load(epochStakeId)
-  if (epochStake) {
-    epochStake.amount = epochStake.amount.minus(amount)
-    epochStake.save()
-    if (epochStake.amount.isZero()) {
-      epochStakes.splice(epochStakes.indexOf(epochStakeId), 1)
-    }
-  }
-
-  const epoch = new Epoch(getEpochCount().toString())
-  epoch.timestamp = timestamp
-  epoch.totalAmount = lastEpoch.totalAmount.minus(amount)
-  epoch.stakes = epochStakes
-  epoch.save()
-
-  increaseEpochCount()
 }
 
 export function handleDelegateChanged(event: DelegateChanged): void {
