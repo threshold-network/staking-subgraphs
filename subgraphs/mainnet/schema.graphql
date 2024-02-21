@@ -16,7 +16,26 @@ type StakeData @entity {
   "Staked T token total amount"
   stakedAmount: BigInt!
   delegatee: StakeDelegation
+  stakeHistory: [StakeHistory!] @derivedFrom(field: "stake")
   authorizations: [AppAuthorization!] @derivedFrom(field: "stake")
+}
+
+"History of each stake"
+type StakeHistory @entity(immutable: true) {
+  "ID is <staking provider address>-<block number>"
+  id: ID!
+  "Stake data of the staking provider"
+  stake: StakeData!
+  "The amount that has been added or reduced"
+  eventAmount: BigInt!
+  "The total staked amount at this time"
+  stakedAmount: BigInt!
+  "The event that updated the staked amount: Staked, ToppedUp or Unstaked"
+  eventType: String!
+  "The Ethereum block number in which the stake was updated"
+  blockNumber: BigInt!
+  "The timestamp in which the stake was updated"
+  timestamp: BigInt!
 }
 
 "AppAuthorizations represents the stake authorizations to Threshold apps"
@@ -37,7 +56,7 @@ type AppAuthorization @entity {
 
 "AppAuthHistory stores each change in the stake's authorization of apps"
 type AppAuthHistory @entity(immutable: true) {
-  "IS is <staking provider address>-<application address>-<block number>"
+  "ID is <staking provider address>-<application address>-<block number>"
   id: ID!
   "AppAuthorization of this update in the authorization"
   appAuthorization: AppAuthorization!
