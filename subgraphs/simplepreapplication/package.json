@@ -1,0 +1,16 @@
+{
+  "name": "simplepreapplication",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ simplepreapplication",
+    "create-local": "graph create --node http://localhost:8020/ simplepreapplication",
+    "remove-local": "graph remove --node http://localhost:8020/ simplepreapplication",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 simplepreapplication"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.68.0",
+    "@graphprotocol/graph-ts": "0.32.0"
+  }
+}

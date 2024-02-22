@@ -1,0 +1,8 @@
+{
+  "mainnet": {
+    "SimplePREApplication": {
+      "address": "0x7E01c9c03FD3737294dbD7630a34845B0F70E5Dd",
+      "startBlock": 14141140
+    }
+  }
+}

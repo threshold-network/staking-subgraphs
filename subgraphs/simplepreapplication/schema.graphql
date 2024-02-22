@@ -1,0 +1,13 @@
+"SimplePREApplication represents the state of Simple Proxy ReEncryption operators"
+type SimplePREApplication @entity {
+  "ID is the staking provider ETH address"
+  id: ID!
+  "Operator's ETH address"
+  operator: Bytes!
+  "Stake address related to this PRE operator"
+  stake: Bytes!
+  "UNIX timestamp in which an operator was bonded for this staking provider for first time"
+  bondedTimestamp: BigInt
+  "UNIX timestamp in which an operator was confirmed for this staking provider for first time"
+  confirmedTimestamp: BigInt
+}
