@@ -614,6 +614,12 @@ describe("Application authorization history", () => {
     assert.fieldEquals(
       "AppAuthHistory",
       id,
+      "eventAmount",
+      toAmount.minus(fromAmount).toString()
+    )
+    assert.fieldEquals(
+      "AppAuthHistory",
+      id,
       "eventType",
       "AuthorizationIncreased"
     )
@@ -643,6 +649,12 @@ describe("Application authorization history", () => {
       stakingProvider.toHexString() + "-" + tacoApp.toHexString()
     )
     assert.fieldEquals("AppAuthHistory", id, "amount", toAmount.toString())
+    assert.fieldEquals(
+      "AppAuthHistory",
+      id,
+      "eventAmount",
+      fromAmount.minus(toAmount).toString()
+    )
     assert.fieldEquals(
       "AppAuthHistory",
       id,
@@ -677,6 +689,12 @@ describe("Application authorization history", () => {
       stakingProvider.toHexString() + "-" + tacoApp.toHexString()
     )
     assert.fieldEquals("AppAuthHistory", id, "amount", toAmount.toString())
+    assert.fieldEquals(
+      "AppAuthHistory",
+      id,
+      "eventAmount",
+      fromAmount.minus(toAmount).toString()
+    )
     assert.fieldEquals(
       "AppAuthHistory",
       id,

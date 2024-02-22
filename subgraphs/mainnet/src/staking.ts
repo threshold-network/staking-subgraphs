@@ -195,6 +195,7 @@ export function handleAuthorizationIncreased(
   const appAuthHistory = new AppAuthHistory(appAuthHistoryId)
   appAuthHistory.appAuthorization = appAuthId
   appAuthHistory.amount = toAmount
+  appAuthHistory.eventAmount = toAmount.minus(event.params.fromAmount)
   appAuthHistory.eventType = "AuthorizationIncreased"
   appAuthHistory.blockNumber = event.block.number
   appAuthHistory.timestamp = event.block.timestamp
@@ -228,6 +229,7 @@ export function handleAuthorizationDecreaseApproved(
   const appAuthHistory = new AppAuthHistory(appAuthHistoryId)
   appAuthHistory.appAuthorization = appAuthId
   appAuthHistory.amount = toAmount
+  appAuthHistory.eventAmount = event.params.fromAmount.minus(toAmount)
   appAuthHistory.eventType = "AuthorizationDecreaseApproved"
   appAuthHistory.blockNumber = event.block.number
   appAuthHistory.timestamp = event.block.timestamp
@@ -282,6 +284,7 @@ export function handleAuthorizationInvoluntaryDecreased(
   const appAuthHistory = new AppAuthHistory(appAuthHistoryId)
   appAuthHistory.appAuthorization = appAuthId
   appAuthHistory.amount = toAmount
+  appAuthHistory.eventAmount = event.params.fromAmount.minus(toAmount)
   appAuthHistory.eventType = "AuthorizationInvoluntaryDecreased"
   appAuthHistory.blockNumber = event.block.number
   appAuthHistory.timestamp = event.block.timestamp
