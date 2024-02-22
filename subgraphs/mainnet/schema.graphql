@@ -13,47 +13,10 @@ type StakeData @entity {
   owner: Account!
   beneficiary: Bytes!
   authorizer: Bytes!
-  "Staked native T token amount"
-  tStake: BigInt!
-  "Staked legacy KEEP token amount converted to T"
-  keepInTStake: BigInt!
-  "Staked legacy Nu token amount converted to T"
-  nuInTStake: BigInt!
-  "Staked T token total amount (T + KEEP in T + Nu in T)"
-  totalStaked: BigInt!
+  "Staked T token total amount"
+  stakedAmount: BigInt!
   delegatee: StakeDelegation
   authorizations: [AppAuthorization!] @derivedFrom(field: "stake")
-}
-
-"EpochStake represents a single stake in a single epoch"
-type EpochStake @entity {
-  "ID is the staking provider's ETH address + epoch counter"
-  id: ID!
-  epoch: Epoch!
-  stakingProvider: Bytes!
-  owner: Bytes!
-  amount: BigInt!
-}
-
-"Epoch represents the staking status of the network at each time instant"
-type Epoch @entity {
-  "ID is a counter number starting at 0"
-  id: ID!
-  "UNIX timestamp in which this epoch begins"
-  timestamp: BigInt!
-  "Duration of this epoch in seconds"
-  duration: BigInt
-  "T total amount resulted of all stakes in this epoch"
-  totalAmount: BigInt!
-  "List of active stakes during this epoch"
-  stakes: [EpochStake!]
-}
-
-"EpochCounter represents the amount of epochs up to this moment"
-type EpochCounter @entity {
-  "ID is 'epoch-counter' (singleton entity)"
-  id: ID!
-  count: Int!
 }
 
 "AppAuthorizations represents the stake authorizations to Threshold apps"
