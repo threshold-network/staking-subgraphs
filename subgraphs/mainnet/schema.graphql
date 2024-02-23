@@ -62,6 +62,8 @@ type AppAuthHistory @entity(immutable: true) {
   appAuthorization: AppAuthorization!
   "Amount of total T authorized by staking provider to the application in this block"
   amount: BigInt!
+  "Amount of T that has been increased or decreased"
+  eventAmount: BigInt!
   "Type of event that caused this update"
   eventType: String!
   "Block in which this authorization update became effective"
