@@ -179,7 +179,7 @@ describe("Staking", () => {
       )
       handleToppedUp(toppedUpEvent)
 
-      assert.entityCount("StakeData", 1)
+      assert.entityCount("StakeData", 1, "the number of entities should remain")
       assert.fieldEquals("StakeData", testStProv, "owner", testOwner)
       assert.fieldEquals(
         "StakeData",
@@ -205,6 +205,74 @@ describe("Staking", () => {
         testAmount.toString()
       )
     })
+  })
+})
+
+describe("StakeHistory", () => {
+  beforeAll(() => {
+    const stakedEvent = createStakedEvent(
+      testStakeType,
+      Address.fromString(testOwner),
+      Address.fromString(testStProv),
+      Address.fromString(testBeneficiary),
+      Address.fromString(testAuthorizer),
+      BigInt.fromI32(testAmount)
+    )
+    handleStaked(stakedEvent)
+  })
+
+  afterAll(() => {
+    clearStore()
+  })
+
+  test("a new staked event is received", () => {
+    const id = testStProv + "-" + "1"
+    assert.fieldEquals("StakeHistory", id, "stake", testStProv)
+    assert.fieldEquals("StakeHistory", id, "eventAmount", testAmount.toString())
+    assert.fieldEquals(
+      "StakeHistory",
+      id,
+      "stakedAmount",
+      testAmount.toString()
+    )
+    assert.fieldEquals("StakeHistory", id, "eventType", "Staked")
+  })
+
+  test("a new toppedUp event is received", () => {
+    const toppedUpEvent = createToppedUpEvent(
+      Address.fromString(testStProv),
+      BigInt.fromI32(testAmount)
+    )
+    handleToppedUp(toppedUpEvent)
+    const id = testStProv + "-" + "1"
+    assert.fieldEquals("StakeHistory", id, "stake", testStProv)
+    assert.fieldEquals("StakeHistory", id, "eventAmount", testAmount.toString())
+    assert.fieldEquals(
+      "StakeHistory",
+      id,
+      "stakedAmount",
+      (testAmount * 2).toString()
+    )
+    assert.fieldEquals("StakeHistory", id, "eventType", "ToppedUp")
+  })
+
+  test("a new unstaked event is received", () => {
+    const unstakedEvent = createUnstakedEvent(
+      Address.fromString(testStProv),
+      BigInt.fromI32(testAmount)
+    )
+    handleUnstaked(unstakedEvent)
+    const id = testStProv + "-" + "1"
+    assert.entityCount("StakeHistory", 1)
+    assert.fieldEquals("StakeHistory", id, "stake", testStProv)
+    assert.fieldEquals("StakeHistory", id, "eventAmount", testAmount.toString())
+    assert.fieldEquals(
+      "StakeHistory",
+      id,
+      "stakedAmount",
+      testAmount.toString()
+    )
+    assert.fieldEquals("StakeHistory", id, "eventType", "Unstaked")
   })
 })
 

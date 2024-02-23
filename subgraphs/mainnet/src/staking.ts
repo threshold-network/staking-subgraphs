@@ -17,6 +17,7 @@ import {
   MinStakeAmount,
   AppAuthorization,
   AppAuthHistory,
+  StakeHistory,
 } from "../generated/schema"
 import {
   getDaoMetric,
@@ -40,6 +41,17 @@ export function handleStaked(event: StakedEvent): void {
   stakeData.authorizer = event.params.authorizer
   stakeData.stakedAmount = event.params.amount
   stakeData.save()
+
+  const stakeHistoryId =
+    stakingProvider.toHexString() + "-" + event.block.number.toString()
+  const stakeHistory = new StakeHistory(stakeHistoryId)
+  stakeHistory.stake = stakingProvider.toHexString()
+  stakeHistory.eventAmount = event.params.amount
+  stakeHistory.stakedAmount = stakeData.stakedAmount
+  stakeHistory.eventType = "Staked"
+  stakeHistory.blockNumber = event.block.number
+  stakeHistory.timestamp = event.block.timestamp
+  stakeHistory.save()
 }
 
 export function handleToppedUp(event: ToppedUpEvent): void {
@@ -54,6 +66,17 @@ export function handleToppedUp(event: ToppedUpEvent): void {
   }
   stakeData.stakedAmount = stakeData.stakedAmount.plus(event.params.amount)
   stakeData.save()
+
+  const stakeHistoryId =
+    stakingProvider.toHexString() + "-" + event.block.number.toString()
+  const stakeHistory = new StakeHistory(stakeHistoryId)
+  stakeHistory.stake = stakingProvider.toHexString()
+  stakeHistory.eventAmount = event.params.amount
+  stakeHistory.stakedAmount = stakeData.stakedAmount
+  stakeHistory.eventType = "ToppedUp"
+  stakeHistory.blockNumber = event.block.number
+  stakeHistory.timestamp = event.block.timestamp
+  stakeHistory.save()
 }
 
 export function handleUnstaked(event: UnstakedEvent): void {
@@ -68,6 +91,17 @@ export function handleUnstaked(event: UnstakedEvent): void {
   }
   stakeData.stakedAmount = stakeData.stakedAmount.minus(event.params.amount)
   stakeData.save()
+
+  const stakeHistoryId =
+    stakingProvider.toHexString() + "-" + event.block.number.toString()
+  const stakeHistory = new StakeHistory(stakeHistoryId)
+  stakeHistory.stake = stakingProvider.toHexString()
+  stakeHistory.eventAmount = event.params.amount
+  stakeHistory.stakedAmount = stakeData.stakedAmount
+  stakeHistory.eventType = "Unstaked"
+  stakeHistory.blockNumber = event.block.number
+  stakeHistory.timestamp = event.block.timestamp
+  stakeHistory.save()
 }
 
 export function handleDelegateChanged(event: DelegateChanged): void {
