@@ -125,6 +125,8 @@ type TACoOperator @entity {
   bondedTimestamp: BigInt!
   "Timestamp in which the first operator of this staking provider was bonded"
   bondedTimestampFirstOperator: BigInt
+  "The operator has been confirmed. This info depends on polygon->ethereum bridge/bot"
+  confirmed: Boolean
 }
 
 "TACo commitments made by a staking provider"
