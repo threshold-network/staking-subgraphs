@@ -10,10 +10,12 @@ import { Address, BigInt } from "@graphprotocol/graph-ts"
 import {
   createCommitmentMadeEvent,
   createOperatorBondedEvent,
+  createOperatorConfirmedEvent,
 } from "./taco-application-utils"
 import {
   handleCommitmentMade,
   handleOperatorBonded,
+  handleOperatorConfirmed,
 } from "../src/taco-application"
 
 const firstStakingProviderAddr = "0x1111111111111111111111111111111111111111"
@@ -155,6 +157,31 @@ describe("TACo operators", () => {
 
     afterAll(() => {
       clearStore()
+    })
+
+    test("operator is marked as confirmed when new operatorConfirmed event", () => {
+      const stakingProvider = Address.fromString(firstStakingProviderAddr)
+      const operator = Address.fromString(firstOperatorAddr)
+
+      assert.fieldEquals(
+        "TACoOperator",
+        firstStakingProviderAddr,
+        "confirmed",
+        "false"
+      )
+
+      const operatorConfirmedEvent = createOperatorConfirmedEvent(
+        stakingProvider,
+        operator
+      )
+      handleOperatorConfirmed(operatorConfirmedEvent)
+
+      assert.fieldEquals(
+        "TACoOperator",
+        firstStakingProviderAddr,
+        "confirmed",
+        "true"
+      )
     })
   })
 })
