@@ -10,10 +10,12 @@ import { Address, BigInt } from "@graphprotocol/graph-ts"
 import {
   createCommitmentMadeEvent,
   createOperatorBondedEvent,
+  createOperatorConfirmedEvent,
 } from "./taco-application-utils"
 import {
   handleCommitmentMade,
   handleOperatorBonded,
+  handleOperatorConfirmed,
 } from "../src/taco-application"
 
 const firstStakingProviderAddr = "0x1111111111111111111111111111111111111111"
@@ -62,6 +64,12 @@ describe("TACo operators", () => {
         "bondedTimestampFirstOperator",
         firstBondedTimestamp.toString()
       )
+      assert.fieldEquals(
+        "TACoOperator",
+        firstStakingProviderAddr,
+        "confirmed",
+        "false"
+      )
     })
 
     test("bondedTimestamp is updated when operatorBonded event for the same staking provider", () => {
@@ -100,6 +108,12 @@ describe("TACo operators", () => {
         "bondedTimestampFirstOperator",
         firstBondedTimestamp.toString()
       )
+      assert.fieldEquals(
+        "TACoOperator",
+        firstStakingProviderAddr,
+        "confirmed",
+        "false"
+      )
     })
 
     test("a new operator is created when new operatorBonded event", () => {
@@ -122,6 +136,52 @@ describe("TACo operators", () => {
       handleOperatorBonded(operatorBondedEvent)
 
       assert.entityCount("TACoOperator", 2)
+    })
+  })
+
+  describe("OperatorConfirmed event", () => {
+    beforeAll(() => {
+      const stakingProvider = Address.fromString(firstStakingProviderAddr)
+      const operator = Address.fromString(firstOperatorAddr)
+      const previousOperator = Address.fromString(firstPreviousOperatorAddr)
+      const timestamp = BigInt.fromI32(firstBondedTimestamp)
+
+      const operatorBondedEvent = createOperatorBondedEvent(
+        stakingProvider,
+        operator,
+        previousOperator,
+        timestamp
+      )
+      handleOperatorBonded(operatorBondedEvent)
+    })
+
+    afterAll(() => {
+      clearStore()
+    })
+
+    test("operator is marked as confirmed when new operatorConfirmed event", () => {
+      const stakingProvider = Address.fromString(firstStakingProviderAddr)
+      const operator = Address.fromString(firstOperatorAddr)
+
+      assert.fieldEquals(
+        "TACoOperator",
+        firstStakingProviderAddr,
+        "confirmed",
+        "false"
+      )
+
+      const operatorConfirmedEvent = createOperatorConfirmedEvent(
+        stakingProvider,
+        operator
+      )
+      handleOperatorConfirmed(operatorConfirmedEvent)
+
+      assert.fieldEquals(
+        "TACoOperator",
+        firstStakingProviderAddr,
+        "confirmed",
+        "true"
+      )
     })
   })
 })

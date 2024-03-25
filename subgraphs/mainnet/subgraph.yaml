@@ -92,6 +92,8 @@ dataSources:
       eventHandlers:
         - event: OperatorBonded(indexed address,indexed address,indexed address,uint256)
           handler: handleOperatorBonded
+        - event: OperatorConfirmed(indexed address,indexed address)
+          handler: handleOperatorConfirmed
         - event: CommitmentMade(indexed address,uint256)
           handler: handleCommitmentMade
       file: ./src/taco-application.ts

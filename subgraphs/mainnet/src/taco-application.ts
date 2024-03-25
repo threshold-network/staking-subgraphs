@@ -1,6 +1,7 @@
-import { Address } from "@graphprotocol/graph-ts"
+import { Address, log } from "@graphprotocol/graph-ts"
 import {
   OperatorBonded as OperatorBondedEvent,
+  OperatorConfirmed as OperatorConfirmedEvent,
   CommitmentMade as CommitmentMadeEvent,
 } from "../generated/TACoApplication/TACoApplication"
 import { TACoOperator, TACoCommitment } from "../generated/schema"
@@ -22,7 +23,25 @@ export function handleOperatorBonded(event: OperatorBondedEvent): void {
   tacoOperator.bondedTimestamp = timestamp
   if (!tacoOperator.bondedTimestampFirstOperator) {
     tacoOperator.bondedTimestampFirstOperator = timestamp
+    tacoOperator.confirmed = false
   }
+  tacoOperator.save()
+}
+
+export function handleOperatorConfirmed(event: OperatorConfirmedEvent): void {
+  const stakingProvider = event.params.stakingProvider
+  const operator = event.params.operator
+
+  const tacoOperator = TACoOperator.load(stakingProvider.toHexString())
+  if (!tacoOperator) {
+    log.warning("Received an OperatorConfirmed event for unknown SP", [
+      stakingProvider.toHexString(),
+    ])
+    return
+  }
+
+  tacoOperator.operator = operator
+  tacoOperator.confirmed = true
   tacoOperator.save()
 }
 

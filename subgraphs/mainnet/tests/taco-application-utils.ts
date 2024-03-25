@@ -3,6 +3,7 @@ import { ethereum, Address, BigInt } from "@graphprotocol/graph-ts"
 import {
   CommitmentMade,
   OperatorBonded,
+  OperatorConfirmed,
 } from "../generated/TACoApplication/TACoApplication"
 
 export function createOperatorBondedEvent(
@@ -38,6 +39,27 @@ export function createOperatorBondedEvent(
   )
 
   return operatorBondedEvent
+}
+
+export function createOperatorConfirmedEvent(
+  stakingProvider: Address,
+  operator: Address
+): OperatorConfirmed {
+  const operatorConfirmedEvent = changetype<OperatorConfirmed>(newMockEvent())
+
+  operatorConfirmedEvent.parameters = []
+
+  operatorConfirmedEvent.parameters.push(
+    new ethereum.EventParam(
+      "stakingProvider",
+      ethereum.Value.fromAddress(stakingProvider)
+    )
+  )
+  operatorConfirmedEvent.parameters.push(
+    new ethereum.EventParam("operator", ethereum.Value.fromAddress(operator))
+  )
+
+  return operatorConfirmedEvent
 }
 
 export function createCommitmentMadeEvent(
