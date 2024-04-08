@@ -15,6 +15,7 @@ type StakeData @entity {
   authorizer: Bytes!
   "Staked T token total amount"
   stakedAmount: BigInt!
+  claimed: BigInt!
   delegatee: StakeDelegation
   stakeHistory: [StakeHistory!] @derivedFrom(field: "stake")
   authorizations: [AppAuthorization!] @derivedFrom(field: "stake")
@@ -113,6 +114,12 @@ type DAOMetric @entity {
   id: ID!
   liquidTotal: BigInt!
   stakedTotal: BigInt!
+}
+
+"Total amount of staking rewards claimed by the stakes"
+type ClaimedRewards @entity {
+  id: ID!
+  claimedRewards: BigInt!
 }
 
 "TACoOperator represents the TACo operator's info of a staking provider"
